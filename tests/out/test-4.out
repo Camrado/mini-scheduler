@@ -1,56 +1,278 @@
 * Read from stdin ... 11 lines in data.
 * Loaded 11 lines of data.
-  [t=0] run(1): (10,pid=0)  pend(9): (1,pid=1) (7,pid=3) (2,pid=2) (6,pid=9) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8)
-  [t=1] run(2): (10,pid=0) (1,pid=1)  pend(8): (2,pid=2) (7,pid=3) (9,pid=5) (6,pid=9) (4,pid=4) (5,pid=8) (8,pid=6) (3,pid=7)
-  [t=2] run(2): (10,pid=0) (1,pid=1)  pend(8): (2,pid=2) (7,pid=3) (9,pid=5) (6,pid=9) (4,pid=4) (5,pid=8) (8,pid=6) (3,pid=7)
-  [t=3] run(2): (10,pid=0) (1,pid=1)  pend(8): (2,pid=2) (7,pid=3) (9,pid=5) (6,pid=9) (4,pid=4) (5,pid=8) (8,pid=6) (3,pid=7)
-  [t=4] run(3): (10,pid=0) (2,pid=2) (1,pid=1)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (6,pid=9) (3,pid=7) (5,pid=8) (8,pid=6)
-  [t=5] run(3): (10,pid=0) (2,pid=2) (1,pid=1)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (6,pid=9) (3,pid=7) (5,pid=8) (8,pid=6)
-  [t=6] run(3): (10,pid=0) (2,pid=2) (1,pid=1)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (6,pid=9) (3,pid=7) (5,pid=8) (8,pid=6)
-  [t=7] run(3): (10,pid=0) (7,pid=3) (1,pid=1)  pend(6): (4,pid=4) (8,pid=6) (9,pid=5) (6,pid=9) (3,pid=7) (5,pid=8)
-  [t=8] run(2): (10,pid=0) (7,pid=3)  pend(7): (4,pid=4) (1,pid=1) (9,pid=5) (8,pid=6) (5,pid=8) (6,pid=9) (3,pid=7)
-  [t=9] run(2): (10,pid=0) (7,pid=3)  pend(7): (4,pid=4) (1,pid=1) (9,pid=5) (8,pid=6) (5,pid=8) (6,pid=9) (3,pid=7)
-  [t=10] run(2): (10,pid=0) (9,pid=5)  pend(7): (7,pid=3) (4,pid=4) (1,pid=1) (8,pid=6) (6,pid=9) (5,pid=8) (3,pid=7)
-  [t=11] run(2): (10,pid=0) (9,pid=5)  pend(7): (8,pid=6) (7,pid=3) (4,pid=4) (1,pid=1) (6,pid=9) (3,pid=7) (5,pid=8)
-  [t=12] run(2): (10,pid=0) (9,pid=5)  pend(7): (8,pid=6) (7,pid=3) (4,pid=4) (1,pid=1) (6,pid=9) (3,pid=7) (5,pid=8)
-  [t=13] run(2): (10,pid=0) (9,pid=5)  pend(7): (8,pid=6) (7,pid=3) (6,pid=9) (4,pid=4) (1,pid=1) (3,pid=7) (5,pid=8)
-  [t=14] run(2): (10,pid=0) (8,pid=6)  pend(6): (7,pid=3) (6,pid=9) (4,pid=4) (3,pid=7) (1,pid=1) (5,pid=8)
-  [t=15] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=16] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=17] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=18] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=19] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=20] run(2): (10,pid=0) (7,pid=3)  pend(5): (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=21] run(3): (7,pid=3) (6,pid=9) (5,pid=8)  pend(3): (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=22] run(3): (7,pid=3) (6,pid=9) (5,pid=8)  pend(3): (4,pid=4) (3,pid=7) (1,pid=1)
-  [t=23] run(4): (7,pid=3) (6,pid=9) (4,pid=4) (3,pid=7)  pend(1): (1,pid=1)
-  [t=24] run(4): (7,pid=3) (6,pid=9) (3,pid=7) (1,pid=1)  pend(0):
-  [t=25] run(2): (6,pid=9) (1,pid=1)  pend(0):
-  [t=26] run(1): (1,pid=1)  pend(0):
+[t=0]
+  > pid=0 prio=10 ('init') queued into pending
+  > scheduled pid=0 prio=10 ('init') pending -> running
+  > CPU load: 10 / 20
+  [t=0] run(1): (10,pid=0)  pend(9): (1,pid=1) (2,pid=2) (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=1]
+  > pid=1 prio=1 ('bash') queued into pending
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 11 / 20
+  [t=1] run(2): (1,pid=1) (10,pid=0)  pend(8): (2,pid=2) (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=2]
+  [t=2] run(2): (1,pid=1) (10,pid=0)  pend(8): (2,pid=2) (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=3]
+  [t=3] run(2): (1,pid=1) (10,pid=0)  pend(8): (2,pid=2) (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=4]
+  > pid=2 prio=2 ('xclock') queued into pending
+  > scheduled pid=2 prio=2 ('xclock') pending -> running
+  > CPU load: 13 / 20
+  [t=4] run(3): (1,pid=1) (10,pid=0) (2,pid=2)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=5]
+  [t=5] run(3): (1,pid=1) (10,pid=0) (2,pid=2)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=6]
+  [t=6] run(3): (1,pid=1) (10,pid=0) (2,pid=2)  pend(7): (7,pid=3) (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=7]
+  > process pid=2 prio=2 ('xclock') finished after t=6
+  > pid=3 prio=7 ('firefox') queued into pending
+  > scheduled pid=3 prio=7 ('firefox') pending -> running
+  > CPU load: 18 / 20
+  [t=7] run(3): (1,pid=1) (10,pid=0) (7,pid=3)  pend(6): (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=8]
+  > pid=4 prio=4 ('sweep') queued into pending
+  > scheduled pid=4 prio=4 ('sweep') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 21 / 20
+  > preempted pid=4 prio=4 ('sweep') running -> pending
+  > CPU load: 17 / 20
+  > idle pid=4 prio=4 ('sweep') tf=10 idle=1
+  > idle pid=1 prio=1 ('bash') tf=21 idle=1
+  [t=8] run(2): (7,pid=3) (10,pid=0)  pend(7): (4,pid=4) (1,pid=1) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=9]
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 18 / 20
+  > idle pid=4 prio=4 ('sweep') tf=11 idle=1
+  [t=9] run(3): (1,pid=1) (10,pid=0) (7,pid=3)  pend(6): (4,pid=4) (9,pid=5) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=10]
+  > pid=5 prio=9 ('df') queued into pending
+  > scheduled pid=5 prio=9 ('df') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 26 / 20
+  > preempted pid=3 prio=7 ('firefox') running -> pending
+  > CPU load: 19 / 20
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > idle pid=3 prio=7 ('firefox') tf=20 idle=1
+  > idle pid=1 prio=1 ('bash') tf=22 idle=2
+  > idle pid=4 prio=4 ('sweep') tf=12 idle=1
+  [t=10] run(2): (9,pid=5) (10,pid=0)  pend(7): (7,pid=3) (1,pid=1) (4,pid=4) (8,pid=6) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=11]
+  > pid=6 prio=8 ('time') queued into pending
+  > pid=6 prio=8 ('time') cannot fit, no preemption
+  > pid=3 prio=7 ('firefox') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 20 / 20
+  > idle pid=6 prio=8 ('time') tf=13 idle=1
+  > idle pid=3 prio=7 ('firefox') tf=21 idle=1
+  > idle pid=4 prio=4 ('sweep') tf=13 idle=1
+  [t=11] run(3): (1,pid=1) (10,pid=0) (9,pid=5)  pend(6): (8,pid=6) (7,pid=3) (4,pid=4) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=12]
+  > scheduled pid=6 prio=8 ('time') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 27 / 20
+  > preempted pid=6 prio=8 ('time') running -> pending
+  > CPU load: 19 / 20
+  > pid=3 prio=7 ('firefox') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > idle pid=6 prio=8 ('time') tf=14 idle=2
+  > idle pid=4 prio=4 ('sweep') tf=14 idle=1
+  > idle pid=3 prio=7 ('firefox') tf=22 idle=1
+  > idle pid=1 prio=1 ('bash') tf=23 idle=3
+  [t=12] run(2): (9,pid=5) (10,pid=0)  pend(7): (8,pid=6) (4,pid=4) (7,pid=3) (1,pid=1) (3,pid=7) (5,pid=8) (6,pid=9)
+[t=13]
+  > pid=9 prio=6 ('js') queued into pending
+  > pid=6 prio=8 ('time') cannot fit, no preemption
+  > pid=3 prio=7 ('firefox') cannot fit, no preemption
+  > pid=9 prio=6 ('js') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 20 / 20
+  > idle pid=6 prio=8 ('time') tf=15 idle=1
+  > idle pid=3 prio=7 ('firefox') tf=23 idle=1
+  > idle pid=9 prio=6 ('js') tf=19 idle=1
+  > idle pid=4 prio=4 ('sweep') tf=15 idle=1
+  [t=13] run(3): (1,pid=1) (10,pid=0) (9,pid=5)  pend(6): (8,pid=6) (7,pid=3) (6,pid=9) (4,pid=4) (3,pid=7) (5,pid=8)
+[t=14]
+  > process pid=5 prio=9 ('df') finished after t=13
+  > pid=7 prio=3 ('wc') queued into pending
+  > scheduled pid=6 prio=8 ('time') pending -> running
+  > CPU load: 19 / 20
+  > scheduled pid=3 prio=7 ('firefox') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 25 / 20
+  > preempted pid=3 prio=7 ('firefox') running -> pending
+  > CPU load: 18 / 20
+  > pid=9 prio=6 ('js') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > pid=7 prio=3 ('wc') cannot fit, no preemption
+  > idle pid=3 prio=7 ('firefox') tf=24 idle=2
+  > idle pid=4 prio=4 ('sweep') tf=16 idle=1
+  > idle pid=9 prio=6 ('js') tf=20 idle=1
+  > idle pid=1 prio=1 ('bash') tf=24 idle=4
+  > idle pid=7 prio=3 ('wc') tf=17 idle=1
+  [t=14] run(2): (8,pid=6) (10,pid=0)  pend(6): (7,pid=3) (4,pid=4) (6,pid=9) (1,pid=1) (3,pid=7) (5,pid=8)
+[t=15]
+  > pid=8 prio=5 ('cat') queued into pending
+  > pid=3 prio=7 ('firefox') cannot fit, no preemption
+  > pid=9 prio=6 ('js') cannot fit, no preemption
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > pid=7 prio=3 ('wc') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 19 / 20
+  > idle pid=3 prio=7 ('firefox') tf=25 idle=1
+  > idle pid=9 prio=6 ('js') tf=21 idle=1
+  > idle pid=8 prio=5 ('cat') tf=18 idle=1
+  > idle pid=4 prio=4 ('sweep') tf=17 idle=1
+  > idle pid=7 prio=3 ('wc') tf=18 idle=1
+  [t=15] run(3): (1,pid=1) (10,pid=0) (8,pid=6)  pend(5): (7,pid=3) (6,pid=9) (5,pid=8) (4,pid=4) (3,pid=7)
+[t=16]
+  > process pid=6 prio=8 ('time') finished after t=15
+  > scheduled pid=3 prio=7 ('firefox') pending -> running
+  > CPU load: 18 / 20
+  > scheduled pid=9 prio=6 ('js') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=9 prio=6 ('js') running -> pending
+  > CPU load: 17 / 20
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=7 prio=3 ('wc') pending -> running
+  > CPU load: 20 / 20
+  > idle pid=9 prio=6 ('js') tf=22 idle=2
+  > idle pid=4 prio=4 ('sweep') tf=18 idle=1
+  > idle pid=8 prio=5 ('cat') tf=19 idle=1
+  > idle pid=1 prio=1 ('bash') tf=25 idle=5
+  [t=16] run(3): (3,pid=7) (10,pid=0) (7,pid=3)  pend(4): (6,pid=9) (4,pid=4) (5,pid=8) (1,pid=1)
+[t=17]
+  > scheduled pid=9 prio=6 ('js') pending -> running (preempting)
+  > preempted pid=7 prio=3 ('wc') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=9 prio=6 ('js') running -> pending
+  > CPU load: 17 / 20
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 18 / 20
+  > idle pid=9 prio=6 ('js') tf=23 idle=3
+  > idle pid=4 prio=4 ('sweep') tf=19 idle=1
+  > idle pid=8 prio=5 ('cat') tf=20 idle=1
+  > idle pid=7 prio=3 ('wc') tf=19 idle=2
+  [t=17] run(3): (1,pid=1) (10,pid=0) (7,pid=3)  pend(4): (6,pid=9) (4,pid=4) (5,pid=8) (3,pid=7)
+[t=18]
+  > scheduled pid=9 prio=6 ('js') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=9 prio=6 ('js') running -> pending
+  > CPU load: 17 / 20
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=7 prio=3 ('wc') pending -> running
+  > CPU load: 20 / 20
+  > idle pid=9 prio=6 ('js') tf=24 idle=4
+  > idle pid=4 prio=4 ('sweep') tf=20 idle=1
+  > idle pid=8 prio=5 ('cat') tf=21 idle=1
+  > idle pid=1 prio=1 ('bash') tf=26 idle=6
+  [t=18] run(3): (3,pid=7) (10,pid=0) (7,pid=3)  pend(4): (6,pid=9) (4,pid=4) (5,pid=8) (1,pid=1)
+[t=19]
+  > scheduled pid=9 prio=6 ('js') pending -> running (preempting)
+  > preempted pid=7 prio=3 ('wc') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=9 prio=6 ('js') running -> pending
+  > CPU load: 17 / 20
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 18 / 20
+  > idle pid=9 prio=6 ('js') tf=25 idle=5
+  > idle pid=4 prio=4 ('sweep') tf=21 idle=1
+  > idle pid=8 prio=5 ('cat') tf=22 idle=1
+  > idle pid=7 prio=3 ('wc') tf=20 idle=3
+  [t=19] run(3): (1,pid=1) (10,pid=0) (7,pid=3)  pend(4): (6,pid=9) (4,pid=4) (5,pid=8) (3,pid=7)
+[t=20]
+  > scheduled pid=9 prio=6 ('js') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=9 prio=6 ('js') running -> pending
+  > CPU load: 17 / 20
+  > pid=8 prio=5 ('cat') cannot fit, no preemption
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=7 prio=3 ('wc') pending -> running
+  > CPU load: 20 / 20
+  > idle pid=9 prio=6 ('js') tf=26 idle=6
+  > idle pid=4 prio=4 ('sweep') tf=22 idle=1
+  > idle pid=8 prio=5 ('cat') tf=23 idle=1
+  > idle pid=1 prio=1 ('bash') tf=27 idle=7
+  [t=20] run(3): (3,pid=7) (10,pid=0) (7,pid=3)  pend(4): (6,pid=9) (4,pid=4) (5,pid=8) (1,pid=1)
+[t=21]
+  > process pid=7 prio=3 ('wc') finished after t=20
+  > process pid=0 prio=10 ('init') finished after t=20
+  > scheduled pid=9 prio=6 ('js') pending -> running
+  > CPU load: 13 / 20
+  > scheduled pid=8 prio=5 ('cat') pending -> running
+  > CPU load: 18 / 20
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 19 / 20
+  > idle pid=4 prio=4 ('sweep') tf=23 idle=1
+  [t=21] run(4): (1,pid=1) (5,pid=8) (6,pid=9) (7,pid=3)  pend(1): (4,pid=4)
+[t=22]
+  > scheduled pid=4 prio=4 ('sweep') pending -> running (preempting)
+  > preempted pid=1 prio=1 ('bash') running -> pending
+  > CPU load: 22 / 20
+  > preempted pid=4 prio=4 ('sweep') running -> pending
+  > CPU load: 18 / 20
+  > idle pid=4 prio=4 ('sweep') tf=24 idle=2
+  > idle pid=1 prio=1 ('bash') tf=28 idle=8
+  [t=22] run(3): (5,pid=8) (7,pid=3) (6,pid=9)  pend(2): (4,pid=4) (1,pid=1)
+[t=23]
+  > pid=4 prio=4 ('sweep') cannot fit, no preemption
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 19 / 20
+  > idle pid=4 prio=4 ('sweep') tf=25 idle=1
+  [t=23] run(4): (1,pid=1) (5,pid=8) (6,pid=9) (7,pid=3)  pend(1): (4,pid=4)
+[t=24]
+  > process pid=8 prio=5 ('cat') finished after t=23
+  > scheduled pid=4 prio=4 ('sweep') pending -> running
+  > CPU load: 18 / 20
+  [t=24] run(4): (1,pid=1) (4,pid=4) (6,pid=9) (7,pid=3)  pend(0):
+[t=25]
+  [t=25] run(4): (1,pid=1) (4,pid=4) (6,pid=9) (7,pid=3)  pend(0):
+[t=26]
+  > process pid=4 prio=4 ('sweep') finished after t=25
+  > process pid=3 prio=7 ('firefox') finished after t=25
+  [t=26] run(2): (1,pid=1) (6,pid=9)  pend(0):
+[t=27]
+  > process pid=9 prio=6 ('js') finished after t=26
   [t=27] run(1): (1,pid=1)  pend(0):
+[t=28]
   [t=28] run(1): (1,pid=1)  pend(0):
-  [t=29] run(1): (1,pid=1)  pend(0):
+[t=29]
+  > process pid=1 prio=1 ('bash') finished after t=28
+  [t=29] run(0):  pend(0):
 * Chronogram === 
 	|....|....|....|....|....|...
 init	XXXXXXXXXXXXXXXXXXXX			 (tf=20,idle=0)
-bash	 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=36,idle=16)
+bash	 XXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=28,idle=8)
 xclock	    XX			 (tf=6,idle=0)
-firefox	       XXXXXXXXXXXXXXXXX			 (tf=24,idle=5)
-sweep	        XXXXXXXXXXXXXXX			 (tf=23,idle=14)
+firefox	       XXXXXXXXXXXXXXXXXX			 (tf=25,idle=1)
+sweep	        XXXXXXXXXXXXXXXXX			 (tf=25,idle=1)
 df	          XXX			 (tf=13,idle=0)
-time	           XXX			 (tf=14,idle=2)
-wc	              XXXXXXXXXX			 (tf=24,idle=8)
-cat	               XXXXXXX			 (tf=22,idle=5)
-js	             XXXXXXXXXXXX			 (tf=25,idle=7)
+time	           XXXX			 (tf=15,idle=1)
+wc	              XXXXXX			 (tf=20,idle=3)
+cat	               XXXXXXXX			 (tf=23,idle=1)
+js	             XXXXXXXXXXXXX			 (tf=26,idle=6)
 
 [===Results===]
 0	RRRRRRRRRRRRRRRRRRRRR________
-1	.RRRRRRR................RRRRR
+1	.RRRRRRR.R.R.R.R.R.R.R.RRRRRR
 2	....RRR______________________
-3	.......RRR.....RRRRRRRRRR____
-4	.......................R_____
+3	.......RRR......RRRRRRRRRR___
+4	........................RR___
 5	..........RRRR_______________
-6	..............R______________
-7	.......................RR____
-8	.....................RR______
-9	.....................RRRRR___
+6	..............RR_____________
+7	................R.R.R________
+8	.....................RRR_____
+9	.....................RRRRRR__
