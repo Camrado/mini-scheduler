@@ -1,30 +1,30 @@
 * Read from stdin ... 7 lines in data.
 * Loaded 7 lines of data.
-  [t=0] run(1): (5,pid=0)  pend(5): (5,pid=1) (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=1] run(1): (5,pid=0)  pend(5): (5,pid=1) (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=2] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=3] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=4] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=5] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=6] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=7] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=8] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
-  [t=9] run(2): (5,pid=0) (5,pid=1)  pend(4): (8,pid=2) (15,pid=3) (10,pid=4) (10,pid=5)
+  [t=0] run(1): (5,pid=0)  pend(5): (5,pid=1) (8,pid=2) (10,pid=5) (15,pid=3) (10,pid=4)
+  [t=1] run(1): (5,pid=0)  pend(5): (5,pid=1) (8,pid=2) (10,pid=5) (15,pid=3) (10,pid=4)
+  [t=2] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=3] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=4] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=5] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=6] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=7] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=8] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
+  [t=9] run(2): (5,pid=0) (5,pid=1)  pend(4): (10,pid=5) (8,pid=2) (10,pid=4) (15,pid=3)
   [t=10] run(3): (10,pid=5) (5,pid=0) (5,pid=1)  pend(3): (8,pid=2) (15,pid=3) (10,pid=4)
-  [t=11] run(3): (10,pid=5) (5,pid=0) (5,pid=1)  pend(3): (8,pid=2) (15,pid=3) (10,pid=4)
+  [t=11] run(3): (10,pid=5) (5,pid=1) (5,pid=0)  pend(3): (8,pid=2) (15,pid=3) (10,pid=4)
   [t=12] run(2): (10,pid=5) (8,pid=2)  pend(4): (5,pid=0) (5,pid=1) (15,pid=3) (10,pid=4)
-  [t=13] run(2): (15,pid=3) (5,pid=0)  pend(4): (10,pid=5) (8,pid=2) (5,pid=1) (10,pid=4)
-  [t=14] run(2): (15,pid=3) (5,pid=0)  pend(4): (10,pid=4) (10,pid=5) (8,pid=2) (5,pid=1)
-  [t=15] run(2): (15,pid=3) (5,pid=0)  pend(4): (10,pid=4) (10,pid=5) (8,pid=2) (5,pid=1)
-  [t=16] run(2): (10,pid=4) (10,pid=5)  pend(2): (8,pid=2) (5,pid=1)
-  [t=17] run(2): (10,pid=4) (10,pid=5)  pend(2): (8,pid=2) (5,pid=1)
-  [t=18] run(2): (10,pid=4) (10,pid=5)  pend(2): (8,pid=2) (5,pid=1)
-  [t=19] run(2): (10,pid=4) (10,pid=5)  pend(2): (8,pid=2) (5,pid=1)
-  [t=20] run(2): (10,pid=5) (8,pid=2)  pend(1): (5,pid=1)
-  [t=21] run(2): (10,pid=5) (8,pid=2)  pend(1): (5,pid=1)
-  [t=22] run(2): (8,pid=2) (5,pid=1)  pend(0):
-  [t=23] run(1): (5,pid=1)  pend(0):
-  [t=24] run(1): (5,pid=1)  pend(0):
+  [t=13] run(1): (15,pid=3)  pend(5): (10,pid=5) (8,pid=2) (5,pid=0) (5,pid=1) (10,pid=4)
+  [t=14] run(1): (15,pid=3)  pend(5): (10,pid=5) (10,pid=4) (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=15] run(1): (15,pid=3)  pend(5): (10,pid=5) (10,pid=4) (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=16] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=17] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=18] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=19] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=20] run(2): (10,pid=5) (8,pid=2)  pend(2): (5,pid=1) (5,pid=0)
+  [t=21] run(2): (10,pid=5) (8,pid=2)  pend(2): (5,pid=1) (5,pid=0)
+  [t=22] run(3): (8,pid=2) (5,pid=0) (5,pid=1)  pend(0):
+  [t=23] run(2): (5,pid=0) (5,pid=1)  pend(0):
+  [t=24] run(2): (5,pid=0) (5,pid=1)  pend(0):
   [t=25] run(1): (5,pid=1)  pend(0):
   [t=26] run(0):  pend(0):
   [t=27] run(0):  pend(0):
@@ -32,7 +32,7 @@
   [t=29] run(0):  pend(0):
 * Chronogram === 
 	|....|....|....|....|....|...
-p0	XXXXXXXXXXXXXXX			 (tf=15,idle=1)
+p0	XXXXXXXXXXXXXXXXXXXXXXXX			 (tf=24,idle=10)
 p1	  XXXXXXXXXXXXXXXXXXXXXXX			 (tf=25,idle=10)
 p2	            XXXXXXXXXX			 (tf=22,idle=7)
 p3	             XX			 (tf=15,idle=0)
@@ -40,7 +40,7 @@ p4	              XXXXX			 (tf=19,idle=1)
 p5	          XXXXXXXXXXX			 (tf=21,idle=3)
 
 [===Results===]
-0	RRRRRRRRRRRR.RRR_____________
+0	RRRRRRRRRRRR..........RRR____
 1	..RRRRRRRRRR..........RRRR___
 2	............R.......RRR______
 3	.............RRR_____________

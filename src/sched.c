@@ -131,148 +131,210 @@ size_t read_data(size_t workload_size, FILE *file) {
 	return count;
 }
 
-/* -----------------------------------------------------------------------
- * Helpers for time_loop
- * ----------------------------------------------------------------------- */
-
-/**
- * @brief Comparison function for qsort: sorts process array by descending
- *        priority so we can greedily fill the CPU from highest prio down.
- */
-static int cmp_prio_desc(const void *a, const void *b) {
-    const process *pa = (const process *)a;
-    const process *pb = (const process *)b;
-    /* higher prio first */
-    return pb->prio - pa->prio;
-}
-
-/**
- * @brief Determine whether process i was in the run queue at the previous
- *        timestep, by checking if the timeline recorded it as 'running'.
+/* =======================================================================
+ * Heap-based scheduler infrastructure
  *
- * @param i          workload index of the process
- * @param t          current timestep (>= 1)
- * @param timeline   the 2-D pstate array [timestep][process_index]
- * @return true if process i was running at t-1
- */
-static bool was_running(size_t i, size_t t, pstate **timeline) {
-    if (t == 0) return false;
-    return timeline[i][t - 1] == running;
-}
+ * Uses the provided MinHeap / MaxHeap implementations from heap.h,
+ * min_heap.c, and max_heap.c.
+ *
+ * process_t (defined in heap.h) is the element type for both heaps:
+ *   .pid      = workload[] index  (same meaning in both heaps)
+ *   .priority = ts   for arrival_heap  (MinHeap orders smallest-ts first)
+ *   .priority = prio for ready_heap    (MaxHeap orders highest-prio first)
+ *
+ * We allocate two flat pools of process_t objects — one per heap — so
+ * that the two heaps can order the same logical process on different keys
+ * without aliasing problems.
+ *
+ * Two heaps drive the scheduler:
+ *
+ *   arrival_heap (MinHeap, key = ts)
+ *     Holds processes that have not yet reached their start time.
+ *     Entries are promoted to ready_heap when ts_i <= t.
+ *
+ *   ready_heap (MaxHeap, key = prio)
+ *     Holds every process with ts_i <= t that may still run.
+ *     tf_i >= t is checked lazily on pop (tf can only grow, never shrink,
+ *     so a truly finished process stays finished).
+ *
+ * overflow[] is a plain array of process_t* used as a temporary staging
+ * area for processes popped from ready_heap that did not fit in the CPU
+ * this round.  They are re-inserted into ready_heap after the fill loop.
+ * ======================================================================= */
+#include "heap.h"
 
-/* -----------------------------------------------------------------------
- * time_loop
- *
- * Simulates the scheduler from timestep ts to tf (inclusive).
- *
- * Algorithm at each timestep t:
- *   1. Collect "current" processes: ts_i <= t <= tf_i  (alive and started)
- *   2. Sort them by priority descending.
- *   3. Greedily assign to run queue while sum(prio) <= CPU_CAPABILITY.
- *      The remaining current processes go to the pending (wait) queue.
- *   4. Any current process that was running at t-1 but is now in the
- *      pending queue has been de-scheduled: increment its idle counter
- *      and its tf (finish time is pushed back by 1).
- *   5. Record the state of every process in the timeline:
- *        - finished (tf_i < t)  -> recorded later by print_timeline as '_'
- *        - running              -> 'R'
- *        - pending/waiting      -> '.'
- *      We call record_timeline() which handles this via the run/pend arrays.
- * ----------------------------------------------------------------------- */
-void time_loop(size_t workload_size, size_t ts, size_t tf, size_t ncpus, pstate **timeline) {
+
+void time_loop(size_t workload_size, size_t ts, size_t tf,
+               size_t ncpus, pstate **timeline) {
     (void)ncpus;
 
-    process *run  = malloc(sizeof(process) * workload_size);
-    process *pend = malloc(sizeof(process) * workload_size);
+    process_t *arrival_pool = NULL;
+    process_t *ready_pool   = NULL;
+    process   *run          = NULL;
+    process   *pend         = NULL;
+    process_t **overflow    = NULL;
+    process_t **ran_this_tick = NULL;
 
-    if (!run || !pend) {
+    MinHeap arrival_heap = {0};
+    MaxHeap ready_heap   = {0};
+
+    arrival_pool = malloc(sizeof(process_t) * workload_size);
+    ready_pool   = malloc(sizeof(process_t) * workload_size);
+    run          = malloc(sizeof(process) * workload_size);
+    pend         = malloc(sizeof(process) * workload_size);
+    overflow     = malloc(sizeof(process_t *) * workload_size);
+    ran_this_tick = malloc(sizeof(process_t *) * workload_size);
+
+    if (!arrival_pool || !ready_pool || !run || !pend || !overflow || !ran_this_tick) {
         perror("time_loop: malloc");
-        free(run);
-        free(pend);
-        return;
+        goto cleanup;
+    }
+
+    minheap_init(&arrival_heap, workload_size);
+    maxheap_init(&ready_heap, workload_size);
+
+    for (size_t i = 0; i < workload_size; i++) {
+        arrival_pool[i].pid      = (int)i;
+        arrival_pool[i].priority = (int)workload[i].ts;
+        minheap_insert(&arrival_heap, &arrival_pool[i]);
+
+        ready_pool[i].pid      = (int)i;
+        ready_pool[i].priority = workload[i].prio;
     }
 
     for (size_t t = ts; t <= tf; t++) {
-        size_t nb_run  = 0;
+        /* Step 1: promote newly arrived processes */
+        while (!minheap_empty(&arrival_heap)) {
+            process_t *top = minheap_top(&arrival_heap);
+            size_t idx = (size_t)top->pid;
+
+            if (workload[idx].ts > t) {
+                break;
+            }
+
+            minheap_pop(&arrival_heap);
+            maxheap_insert(&ready_heap, &ready_pool[idx]);
+        }
+
+        /* Step 2: lazily discard finished processes at heap top */
+        while (!maxheap_empty(&ready_heap)) {
+            process_t *top = maxheap_top(&ready_heap);
+            size_t idx = (size_t)top->pid;
+
+            if (workload[idx].tf >= t) {
+                break;
+            }
+
+            maxheap_pop(&ready_heap);
+        }
+
+        size_t nb_run = 0;
+        size_t nb_overflow = 0;
+        size_t nb_ran = 0;
         size_t nb_pend = 0;
-
-        process *candidates = malloc(sizeof(process) * workload_size);
-        size_t nb_cand = 0;
-
-        if (!candidates) {
-            perror("time_loop: malloc");
-            free(run);
-            free(pend);
-            return;
-        }
-
-        /* Step 1: collect current processes only */
-        for (size_t i = 0; i < workload_size; i++) {
-            if (workload[i].ts <= t && t <= workload[i].tf) {
-                candidates[nb_cand].prio = workload[i].prio;
-                candidates[nb_cand].pid  = i;
-                nb_cand++;
-            }
-        }
-
-        /* Step 2: sort current processes by descending priority */
-        qsort(candidates, nb_cand, sizeof(process), cmp_prio_desc);
-
-        /* Step 3: greedily fill running queue up to CPU capability */
         int prio_sum = 0;
-        for (size_t c = 0; c < nb_cand; c++) {
-            int p = candidates[c].prio;
-            if (prio_sum + p <= CPU_CAPABILITY) {
-                run[nb_run++] = candidates[c];
-                prio_sum += p;
+        bool cap_reached = false;
+
+        /* Step 3: greedy CPU fill */
+        while (!maxheap_empty(&ready_heap)) {
+            process_t *proc = maxheap_top(&ready_heap);
+            size_t idx = (size_t)proc->pid;
+            maxheap_pop(&ready_heap);
+
+            /* lazy discard if not at top during previous cleanup */
+            if (workload[idx].tf < t) {
+                continue;
+            }
+
+            if (!cap_reached && prio_sum + workload[idx].prio <= CPU_CAPABILITY) {
+                run[nb_run].prio = workload[idx].prio;
+                run[nb_run].pid  = idx;
+                nb_run++;
+
+                ran_this_tick[nb_ran++] = proc;
+                prio_sum += workload[idx].prio;
             } else {
-                pend[nb_pend++] = candidates[c];
+                cap_reached = true;
+                overflow[nb_overflow++] = proc;
             }
         }
 
-        /* Step 4: future processes are also pending */
-        for (size_t i = 0; i < workload_size; i++) {
-            if (t < workload[i].ts) {
-                pend[nb_pend].prio = workload[i].prio;
-                pend[nb_pend].pid  = i;
+        /* Step 4: apply idle/tf penalty only to already-started pending processes */
+        for (size_t o = 0; o < nb_overflow; o++) {
+            size_t idx = (size_t)overflow[o]->pid;
+
+            if (workload[idx].ts < t && t <= workload[idx].tf) {
+                workload[idx].idle++;
+                workload[idx].tf++;
+            }
+        }
+
+        /* Step 5: build pending array for timeline recording */
+
+        /* pending current processes that did not fit */
+        for (size_t o = 0; o < nb_overflow; o++) {
+            size_t idx = (size_t)overflow[o]->pid;
+
+            if (t <= workload[idx].tf) {
+                pend[nb_pend].prio = workload[idx].prio;
+                pend[nb_pend].pid  = idx;
                 nb_pend++;
             }
         }
 
-        free(candidates);
+        /* future processes still waiting to start */
+        for (size_t a = 1; a <= arrival_heap.size; a++) {
+            size_t idx = (size_t)arrival_heap.array[a]->pid;
 
-		/* Step 5: every already-started process that is pending at this timestep
-		   loses one time unit and therefore gets idle++ and tf++ */
-		for (size_t j = 0; j < nb_pend; j++) {
-		    size_t idx = pend[j].pid;
-		
-		    /* future processes are pending but should not be penalized yet */
-		    if (workload[idx].ts < t && t <= workload[idx].tf) {
-		        workload[idx].idle++;
-		        workload[idx].tf++;
-		    }
-		}
+            pend[nb_pend].prio = workload[idx].prio;
+            pend[nb_pend].pid  = idx;
+            nb_pend++;
+        }
 
-        /* Step 6: record timeline */
         record_timeline(t, tf + 1,
                         timeline,
-                        run,  nb_run,
+                        run, nb_run,
                         pend, nb_pend,
                         workload_size);
 
         printf("  [t=%zu] run(%zu):", t, nb_run);
-        for (size_t r = 0; r < nb_run; r++)
+        for (size_t r = 0; r < nb_run; r++) {
             printf(" (%d,pid=%zu)", run[r].prio, run[r].pid);
-
+        }
         printf("  pend(%zu):", nb_pend);
-        for (size_t p = 0; p < nb_pend; p++)
+        for (size_t p = 0; p < nb_pend; p++) {
             printf(" (%d,pid=%zu)", pend[p].prio, pend[p].pid);
-
+        }
         printf("\n");
+
+        /* Step 6: reinsert live running processes for future ticks */
+        for (size_t r = 0; r < nb_ran; r++) {
+            size_t idx = (size_t)ran_this_tick[r]->pid;
+
+            if (workload[idx].tf > t) {
+                maxheap_insert(&ready_heap, ran_this_tick[r]);
+            }
+        }
+
+        /* Step 7: reinsert pending live processes */
+        for (size_t o = 0; o < nb_overflow; o++) {
+            size_t idx = (size_t)overflow[o]->pid;
+
+            if (workload[idx].tf >= t) {
+                maxheap_insert(&ready_heap, overflow[o]);
+            }
+        }
     }
 
+cleanup:
+    minheap_free(&arrival_heap);
+    maxheap_free(&ready_heap);
+    free(arrival_pool);
+    free(ready_pool);
     free(run);
     free(pend);
+    free(overflow);
+    free(ran_this_tick);
 }
 
 /**

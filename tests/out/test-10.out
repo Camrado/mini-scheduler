@@ -1,50 +1,50 @@
 * Read from stdin ... 8 lines in data.
 * Loaded 8 lines of data.
-  [t=0] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=1] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=2] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=3] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=4] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=5] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=6] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
-  [t=7] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5) (16,pid=6)
+  [t=0] run(1): (20,pid=0)  pend(6): (12,pid=2) (12,pid=3) (12,pid=1) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=1] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=2] run(1): (20,pid=0)  pend(6): (12,pid=2) (12,pid=3) (12,pid=1) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=3] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=4] run(1): (20,pid=0)  pend(6): (12,pid=2) (12,pid=3) (12,pid=1) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=5] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=6] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (16,pid=6) (4,pid=5)
+  [t=7] run(1): (20,pid=0)  pend(6): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (16,pid=6) (4,pid=5)
   [t=8] run(1): (20,pid=0)  pend(6): (16,pid=6) (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
-  [t=9] run(1): (20,pid=0)  pend(6): (16,pid=6) (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
+  [t=9] run(1): (20,pid=0)  pend(6): (16,pid=6) (12,pid=3) (12,pid=2) (12,pid=1) (5,pid=4) (4,pid=5)
   [t=10] run(1): (20,pid=0)  pend(6): (16,pid=6) (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
-  [t=11] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
+  [t=11] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
   [t=12] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
-  [t=13] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
-  [t=14] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=15] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=16] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=17] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=18] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=19] run(2): (16,pid=6) (4,pid=5)  pend(4): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4)
-  [t=20] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=21] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=22] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=23] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=24] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=25] run(2): (12,pid=1) (5,pid=4)  pend(3): (12,pid=2) (12,pid=3) (4,pid=5)
-  [t=26] run(2): (12,pid=1) (4,pid=5)  pend(2): (12,pid=2) (12,pid=3)
-  [t=27] run(1): (12,pid=1)  pend(2): (12,pid=2) (12,pid=3)
-  [t=28] run(1): (12,pid=2)  pend(1): (12,pid=3)
-  [t=29] run(1): (12,pid=2)  pend(1): (12,pid=3)
+  [t=13] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=14] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
+  [t=15] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=16] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
+  [t=17] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=18] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=2) (12,pid=3) (5,pid=4) (4,pid=5)
+  [t=19] run(1): (16,pid=6)  pend(5): (12,pid=1) (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=20] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=21] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=22] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=23] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=24] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=25] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=26] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=27] run(1): (12,pid=1)  pend(4): (12,pid=3) (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=28] run(1): (12,pid=3)  pend(3): (12,pid=2) (5,pid=4) (4,pid=5)
+  [t=29] run(1): (12,pid=3)  pend(3): (12,pid=2) (5,pid=4) (4,pid=5)
 * Chronogram === 
 	|....|....|....|....|....|...
 p0	XXXXXXXXXX			 (tf=10,idle=0)
 p1	XXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=27,idle=19)
-p2	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=35,idle=27)
-p3	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=37,idle=29)
-p4	      XXXXXXXXXXXXXXXXXXX			 (tf=25,idle=13)
-p5	              XXXXXXXXXXXX			 (tf=26,idle=6)
+p2	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=37,idle=29)
+p3	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=35,idle=27)
+p4	      XXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=35,idle=23)
+p5	              XXXXXXXXXXXXXXXXXXXXX			 (tf=35,idle=15)
 p6	        XXXXXXXXXXX			 (tf=19,idle=2)
 
 [===Results===]
 0	RRRRRRRRRRR__________________
 1	....................RRRRRRRR_
-2	............................R
-3	.............................
-4	....................RRRRRR___
-5	..............RRRRRR......R__
+2	.............................
+3	............................R
+4	.............................
+5	.............................
 6	...........RRRRRRRRR_________

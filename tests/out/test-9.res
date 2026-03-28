@@ -1,5 +1,5 @@
 [===Results===]
-0	RRRRRRRRRRRR.RRR_____________
+0	RRRRRRRRRRRR..........RRR____
 1	..RRRRRRRRRR..........RRRR___
 2	............R.......RRR______
 3	.............RRR_____________
