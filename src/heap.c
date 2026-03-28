@@ -1,240 +1,184 @@
-/**
- * @file heap.c
- * @brief MinHeap and MaxHeap implementations for the scheduler.
+/*
+ * heap.c
  *
- * Both heaps store process_t* in a 1-based array.
- * Tie-breaking on equal priority uses pid (lower pid wins for MinHeap,
- * higher pid wins for MaxHeap) — this keeps scheduling deterministic.
+ * Implementation of the generic heap used by the scheduler
+ * Same struct handles both min-heap (running queue) and max-heap (pending queue)
+ * by passing a different comparator at init time
  *
- * This file is the single source of truth for heap operations.
- * Do NOT link min_heap.c or max_heap.c alongside this file.
+ * Based on the reference heap from the lab, adapted to store process_t pointers
+ * instead of plain ints and to support both orderings
  */
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+#include <assert.h>
 #include "heap.h"
 
-/* ========================= Internal helpers ========================= */
-
-static void swap_ptrs(process_t **a, process_t **b) {
+/* swap two pointers in the array */
+static void swap(process_t **a, process_t **b) {
     process_t *tmp = *a;
     *a = *b;
     *b = tmp;
 }
 
-/**
- * Returns true if a should be *above* b in the MinHeap.
- * Lower priority value = top of heap (preempted first).
- * Tie-break 1: lower idle count = top of heap. A process that has been
- *   delayed less is considered less "deserving" and is preempted first.
- * Tie-break 2: higher pid = top of heap (final deterministic tiebreaker).
+/*
+ * Comparators
  */
-static bool min_has_priority(const process_t *a, const process_t *b) {
+
+/* min_cmp: used for runningQueue
+ * lower priority value = closer to top (weakest proc is easiest to evict)
+ * tie-break on pid so ordering stays deterministic */
+bool min_cmp(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority < b->priority;
-    return a->pid > b->pid;   /* deterministic tie-break only */
+    return a->pid > b->pid;
 }
 
-/**
- * Returns true if a should be *above* b in the MaxHeap.
- * Higher priority value = top of heap (scheduled first).
- * Tie-break: lower pid = top of heap, so among equal-priority pending
- * processes the one with the lowest pid is scheduled first.
- */
-static bool max_has_priority(const process_t *a, const process_t *b) {
+/* max_cmp: used for pendingQueue
+ * higher priority = closer to top (best proc gets scheduled first)
+ * same priority -> lower seq wins (FIFO, earlier arrivals go first) */
+bool max_cmp(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority > b->priority;
-    return a->seq < b->seq;   /* FIFO within same priority */
+    return a->seq < b->seq;
 }
-/* ========================= MinHeap ========================= */
 
-void minheap_init(MinHeap *h, size_t capacity) {
-    /* +1 because we use 1-based indexing (index 0 is unused) */
-    h->array = malloc(sizeof(process_t *) * (capacity + 1));
-    if (!h->array) {
-        perror("minheap_init: malloc");
+/* allocate backing array and set fields */
+void heap_init(Heap *h, size_t capacity, heap_cmp cmp) {
+    assert(h && cmp);
+    h->arr = malloc(sizeof(process_t *) * capacity);
+    if (!h->arr) {
+        perror("heap_init: malloc");
         exit(EXIT_FAILURE);
     }
     h->size     = 0;
     h->capacity = capacity;
+    h->cmp      = cmp;
 }
 
-bool minheap_empty(MinHeap *h) {
+bool heap_empty(Heap *h) {
     return h == NULL || h->size == 0;
 }
 
-void min_heapify_up(MinHeap *h, size_t idx) {
-    while (idx > 1) {
+size_t heap_size(Heap *h) {
+    return (h == NULL) ? 0 : h->size;
+}
+
+/* top element is always arr[0] in a valid heap */
+process_t *heap_top(Heap *h) {
+    return heap_empty(h) ? NULL : h->arr[0];
+}
+
+/*
+ * heapify_down - fix heap order going downward from idx
+ * same idea as max_heapify from the reference, but uses our cmp
+ */
+void heapify_down(Heap *h, size_t idx) {
+    while (true) {
+        size_t left    = HEAP_LEFT(idx);
+        size_t right   = HEAP_RIGHT(idx);
+        size_t best    = idx;           /* track which node should be on top */
+
+        /* check left child */
+        if (left < h->size && h->cmp(h->arr[left], h->arr[best]))
+            best = left;
+
+        /* check right child */
+        if (right < h->size && h->cmp(h->arr[right], h->arr[best]))
+            best = right;
+
+        if (best == idx)
+            break;                     
+
+        swap(&h->arr[idx], &h->arr[best]);
+        idx = best;
+    }
+}
+
+/*
+ * heapify_up - fix heap order going upward from idx
+ * used after insert, mirrors the increase-key loop from the reference
+ */
+void heapify_up(Heap *h, size_t idx) {
+    while (idx > 0) {
         size_t parent = HEAP_PARENT(idx);
-        if (!min_has_priority(h->array[idx], h->array[parent]))
-            break;
-        swap_ptrs(&h->array[parent], &h->array[idx]);
+        if (!h->cmp(h->arr[idx], h->arr[parent]))
+            break;                      /* already in right place */
+        swap(&h->arr[parent], &h->arr[idx]);
         idx = parent;
     }
 }
 
-void min_heapify_down(MinHeap *h, size_t idx) {
-    while (true) {
-        size_t left    = HEAP_LEFT(idx);
-        size_t right   = HEAP_RIGHT(idx);
-        size_t smallest = idx;
+/*
+ * heap_insert - add proc at the end then bubble up
+ * doubles capacity if we run out of space
+ */
+void heap_insert(Heap *h, process_t *proc) {
+    assert(h && proc);
 
-        if (left <= h->size &&
-            min_has_priority(h->array[left], h->array[smallest]))
-            smallest = left;
-
-        if (right <= h->size &&
-            min_has_priority(h->array[right], h->array[smallest]))
-            smallest = right;
-
-        if (smallest == idx)
-            break;
-
-        swap_ptrs(&h->array[idx], &h->array[smallest]);
-        idx = smallest;
-    }
-}
-
-void minheap_insert(MinHeap *h, process_t *proc) {
+    /* grow if needed */
     if (h->size >= h->capacity) {
-        fprintf(stderr, "minheap_insert: heap capacity exceeded (cap=%zu)\n",
-                h->capacity);
-        exit(EXIT_FAILURE);
+        h->capacity = h->capacity ? h->capacity * 2 : 1;
+        h->arr = realloc(h->arr, sizeof(process_t *) * h->capacity);
+        if (!h->arr) {
+            perror("heap_insert: realloc");
+            exit(EXIT_FAILURE);
+        }
     }
-    h->array[++h->size] = proc;
-    min_heapify_up(h, h->size);
+
+    h->arr[h->size] = proc;   /* append at end */
+    h->size++;
+    heapify_up(h, h->size - 1);
 }
 
-process_t *minheap_top(MinHeap *h) {
-    return minheap_empty(h) ? NULL : h->array[1];
-}
+/*
+ * heap_pop - remove and return the top element
+ * move last element to root, decrement size, fix downward
+ */
+process_t *heap_pop(Heap *h) {
+    if (heap_empty(h))
+        return NULL;
 
-void minheap_pop(MinHeap *h) {
-    if (minheap_empty(h))
-        return;
-    h->array[1] = h->array[h->size];
+    process_t *top = h->arr[0];          /* save what we're returning */
+    h->arr[0] = h->arr[h->size - 1];    /* put last element at root */
     h->size--;
     if (h->size > 0)
-        min_heapify_down(h, 1);
+        heapify_down(h, 0);
+
+    return top;
 }
 
-void minheap_remove_at(MinHeap *h, size_t idx) {
-    if (h == NULL || idx == 0 || idx > h->size)
+/*
+ * heap_remove_at - remove element at arbitrary index
+ * needed for remove_finished_processes which scans the whole array
+ * replace the slot with the last element then fix up or down as needed
+ */
+void heap_remove_at(Heap *h, size_t idx) {
+    if (h == NULL || idx >= h->size)
         return;
-    if (idx == h->size) {
+
+    /* removing the last element, just shrink */
+    if (idx == h->size - 1) {
         h->size--;
         return;
     }
-    h->array[idx] = h->array[h->size];
+
+    h->arr[idx] = h->arr[h->size - 1];  /* overwrite with last */
     h->size--;
-    /* The replacement node might need to go up or down */
-    if (idx > 1 && min_has_priority(h->array[idx], h->array[HEAP_PARENT(idx)]))
-        min_heapify_up(h, idx);
+
+    /* the replacement might need to go up or down, check both */
+    if (idx > 0 && h->cmp(h->arr[idx], h->arr[HEAP_PARENT(idx)]))
+        heapify_up(h, idx);
     else
-        min_heapify_down(h, idx);
+        heapify_down(h, idx);
 }
 
-void minheap_free(MinHeap *h) {
+/* free the backing array only - process_t objects live in procs[] in time_loop */
+void heap_free(Heap *h) {
     if (h == NULL)
         return;
-    free(h->array);
-    h->array    = NULL;
-    h->size     = 0;
-    h->capacity = 0;
-}
-
-/* ========================= MaxHeap ========================= */
-
-void maxheap_init(MaxHeap *h, size_t capacity) {
-    h->array = malloc(sizeof(process_t *) * (capacity + 1));
-    if (!h->array) {
-        perror("maxheap_init: malloc");
-        exit(EXIT_FAILURE);
-    }
-    h->size     = 0;
-    h->capacity = capacity;
-}
-
-bool maxheap_empty(MaxHeap *h) {
-    return h == NULL || h->size == 0;
-}
-
-void max_heapify_up(MaxHeap *h, size_t idx) {
-    while (idx > 1) {
-        size_t parent = HEAP_PARENT(idx);
-        if (!max_has_priority(h->array[idx], h->array[parent]))
-            break;
-        swap_ptrs(&h->array[parent], &h->array[idx]);
-        idx = parent;
-    }
-}
-
-void max_heapify_down(MaxHeap *h, size_t idx) {
-    while (true) {
-        size_t left    = HEAP_LEFT(idx);
-        size_t right   = HEAP_RIGHT(idx);
-        size_t largest = idx;
-
-        if (left <= h->size &&
-            max_has_priority(h->array[left], h->array[largest]))
-            largest = left;
-
-        if (right <= h->size &&
-            max_has_priority(h->array[right], h->array[largest]))
-            largest = right;
-
-        if (largest == idx)
-            break;
-
-        swap_ptrs(&h->array[idx], &h->array[largest]);
-        idx = largest;
-    }
-}
-
-void maxheap_insert(MaxHeap *h, process_t *proc) {
-    if (h->size >= h->capacity) {
-        fprintf(stderr, "maxheap_insert: heap capacity exceeded (cap=%zu)\n",
-                h->capacity);
-        exit(EXIT_FAILURE);
-    }
-    h->array[++h->size] = proc;
-    max_heapify_up(h, h->size);
-}
-
-process_t *maxheap_top(MaxHeap *h) {
-    return maxheap_empty(h) ? NULL : h->array[1];
-}
-
-void maxheap_pop(MaxHeap *h) {
-    if (maxheap_empty(h))
-        return;
-    h->array[1] = h->array[h->size];
-    h->size--;
-    if (h->size > 0)
-        max_heapify_down(h, 1);
-}
-
-void maxheap_remove_at(MaxHeap *h, size_t idx) {
-    if (h == NULL || idx == 0 || idx > h->size)
-        return;
-    if (idx == h->size) {
-        h->size--;
-        return;
-    }
-    h->array[idx] = h->array[h->size];
-    h->size--;
-    if (idx > 1 && max_has_priority(h->array[idx], h->array[HEAP_PARENT(idx)]))
-        max_heapify_up(h, idx);
-    else
-        max_heapify_down(h, idx);
-}
-
-void maxheap_free(MaxHeap *h) {
-    if (h == NULL)
-        return;
-    free(h->array);
-    h->array    = NULL;
+    free(h->arr);
+    h->arr      = NULL;
     h->size     = 0;
     h->capacity = 0;
 }

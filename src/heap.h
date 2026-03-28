@@ -1,95 +1,91 @@
-/**
- * @file heap.h
- * @brief Shared definitions for MinHeap and MaxHeap used by the scheduler.
+/*
+ * heap.h
  *
- * process_t is the element type stored in both heaps.
- * The heaps store process_t* (pointers) in a 1-based array.
+ * Generic heap used for both queues in the scheduler
+ * One struct, one comparator pointer - works for min and max
  *
- * Two-queue scheduling model (adapted from reference):
+ * runningQueue  -> min_cmp  (weakest proc at top, easy to preempt)
+ * pendingQueue  -> max_cmp  (best candidate always at top)
  *
- *   runningQueue (MinHeap, key = priority):
- *     Holds currently executing processes.
- *     MinHeap so the *lowest-priority* running process bubbles to the top,
- *     enabling O(log n) preemption checks when a higher-priority process
- *     arrives but the CPU is already at capacity.
- *
- *   pendingQueue (MaxHeap, key = priority):
- *     Holds ready-but-not-yet-running processes (arrived, not finished,
- *     not currently scheduled).
- *     MaxHeap so the highest-priority candidate is always tried first.
- *
- * process_t carries all per-process mutable state so the heaps own the
- * data directly, avoiding stale-pointer hazards from a separate workload[].
+ * 0-based indexing throughout (parent = (i-1)/2, left = 2i+1, right = 2i+2)
  */
 
-#ifndef _HEAP_H_
-#define _HEAP_H_
+#ifndef HEAP_H
+#define HEAP_H
 
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* -----------------------------------------------------------------------
- * Element type stored in both heaps.
- * Carries all mutable scheduling state for one process.
- * ----------------------------------------------------------------------- */
+/* all the info needed per process during scheduling */
 typedef struct {
-    int    pid;         /**< unique process id (== workload[] index)        */
-    int    ppid;        /**< parent pid                                      */
-    size_t ts;          /**< arrival / start time (immutable after load)     */
-    size_t tf;          /**< current finish time   (grows when process idles)*/
-    size_t idle;        /**< accumulated idle ticks                          */
-    char   cmd[32];     /**< command name (for logging / chronogram)         */
-    int    priority;    /**< cpu scheduling priority — heap key in both queues*/
-    size_t seq;   /* insertion sequence number — FIFO tiebreak in MaxHeap */
-
+    int    pid;       /* process id */
+    int    ppid;      /* parent pid */
+    size_t ts;        /* start time, doesn't change after loading */
+    size_t tf;        /* finish time - grows if process keeps getting delayed */
+    size_t idle;      /* how many ticks this proc has been waiting */
+    char   cmd[32];   /* command name */
+    int    priority;  /* the key we sort on */
+    size_t seq;       /* arrival order, used to break ties fairly */
 } process_t;
 
-/* -----------------------------------------------------------------------
- * 1-based binary heap index macros
- * ----------------------------------------------------------------------- */
-#define HEAP_PARENT(i)  ((i) / 2)
-#define HEAP_LEFT(i)    ((i) * 2)
-#define HEAP_RIGHT(i)   ((i) * 2 + 1)
+/* index macros - 0-based */
+#define HEAP_PARENT(i)  (((i) - 1) / 2)
+#define HEAP_LEFT(i)    ((i) * 2 + 1)
+#define HEAP_RIGHT(i)   ((i) * 2 + 2)
 
-/* -----------------------------------------------------------------------
- * MinHeap — root is the element with the *lowest* priority value.
- * Used as runningQueue: the weakest running process is always at top,
- * ready to be preempted.
- * ----------------------------------------------------------------------- */
+/* cmp(a, b) returns true if a should be above b */
+typedef bool (*heap_cmp)(const process_t *a, const process_t *b);
+
+/* the heap itself - works for both min and max depending on cmp */
 typedef struct {
-    process_t **array;   /**< 1-based array of pointers */
-    size_t      size;
-    size_t      capacity;
-} MinHeap;
+    process_t **arr;      /* array of pointers, 0-based */
+    size_t      size;     /* current number of elements */
+    size_t      capacity; /* allocated slots */
+    heap_cmp    cmp;      /* comparator set at init */
+} Heap;
 
-void       minheap_init     (MinHeap *h, size_t capacity);
-void       minheap_insert   (MinHeap *h, process_t *proc);
-process_t *minheap_top      (MinHeap *h);
-void       minheap_pop      (MinHeap *h);
-bool       minheap_empty    (MinHeap *h);
-void       minheap_free     (MinHeap *h);
-void       minheap_remove_at(MinHeap *h, size_t idx);
-void       min_heapify_down (MinHeap *h, size_t idx);
-void       min_heapify_up   (MinHeap *h, size_t idx);
+/*
+ * Two comparators:
+ * min_cmp: lower priority wins -> used for runningQueue
+ * max_cmp: higher priority wins -> used for pendingQueue
+ */
 
-/* -----------------------------------------------------------------------
- * MaxHeap — root is the element with the *highest* priority value.
- * Used as pendingQueue: the best candidate is always tried first.
- * ----------------------------------------------------------------------- */
-typedef struct {
-    process_t **array;   /**< 1-based array of pointers */
-    size_t      size;
-    size_t      capacity;
-} MaxHeap;
+/* lower prio value = goes to top. tie break on pid */
+bool min_cmp(const process_t *a, const process_t *b);
 
-void       maxheap_init     (MaxHeap *h, size_t capacity);
-void       maxheap_insert   (MaxHeap *h, process_t *proc);
-process_t *maxheap_top      (MaxHeap *h);
-void       maxheap_pop      (MaxHeap *h);
-bool       maxheap_empty    (MaxHeap *h);
-void       maxheap_free     (MaxHeap *h);
-void       maxheap_remove_at(MaxHeap *h, size_t idx);
-void       max_heapify_down (MaxHeap *h, size_t idx);
-void       max_heapify_up   (MaxHeap *h, size_t idx);
+/* higher prio value = goes to top. tie break on seq (FIFO) */
+bool max_cmp(const process_t *a, const process_t *b);
 
-#endif /* _HEAP_H_ */
+/* --- heap functions --- */
+
+/* set up the heap with given capacity and comparator */
+void heap_init(Heap *h, size_t capacity, heap_cmp cmp);
+
+/* returns true if empty */
+bool heap_empty(Heap *h);
+
+/* number of elements in heap */
+size_t heap_size(Heap *h);
+
+/* peek at top without removing, NULL if empty */
+process_t *heap_top(Heap *h);
+
+/* insert a process, grows array if needed */
+void heap_insert(Heap *h, process_t *proc);
+
+/* remove and return top element, NULL if empty */
+process_t *heap_pop(Heap *h);
+
+/* remove element at index idx (used when scanning for finished procs) */
+void heap_remove_at(Heap *h, size_t idx);
+
+/* bubble element up (used after insert) */
+void heapify_up(Heap *h, size_t idx);
+
+/* push element down (used after pop or remove) */
+void heapify_down(Heap *h, size_t idx);
+
+/* free the array - does NOT free the process_t objects themselves */
+void heap_free(Heap *h);
+
+#endif /* HEAP_H */
