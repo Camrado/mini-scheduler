@@ -1,6 +1,6 @@
 # -*- Makefile -*-
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -w -g
 LIBS =
 
 TARGET = sched
