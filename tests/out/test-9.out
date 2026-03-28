@@ -100,53 +100,53 @@
   > idle pid=2 prio=8 ('p2') tf=19 idle=4
   > idle pid=1 prio=5 ('p1') tf=18 idle=3
   > idle pid=0 prio=5 ('p0') tf=18 idle=4
-  [t=16] run(2): (10,pid=4) (10,pid=5)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
+  [t=16] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
 [t=17]
   > pid=2 prio=8 ('p2') cannot fit, no preemption
-  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > pid=1 prio=5 ('p1') cannot fit, no preemption
+  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > idle pid=2 prio=8 ('p2') tf=20 idle=5
-  > idle pid=0 prio=5 ('p0') tf=19 idle=5
   > idle pid=1 prio=5 ('p1') tf=19 idle=4
-  [t=17] run(2): (10,pid=4) (10,pid=5)  pend(3): (8,pid=2) (5,pid=0) (5,pid=1)
+  > idle pid=0 prio=5 ('p0') tf=19 idle=5
+  [t=17] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
 [t=18]
   > pid=2 prio=8 ('p2') cannot fit, no preemption
-  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > pid=1 prio=5 ('p1') cannot fit, no preemption
+  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > idle pid=2 prio=8 ('p2') tf=21 idle=6
-  > idle pid=0 prio=5 ('p0') tf=20 idle=6
   > idle pid=1 prio=5 ('p1') tf=20 idle=5
-  [t=18] run(2): (10,pid=4) (10,pid=5)  pend(3): (8,pid=2) (5,pid=0) (5,pid=1)
+  > idle pid=0 prio=5 ('p0') tf=20 idle=6
+  [t=18] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
 [t=19]
   > pid=2 prio=8 ('p2') cannot fit, no preemption
-  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > pid=1 prio=5 ('p1') cannot fit, no preemption
+  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > idle pid=2 prio=8 ('p2') tf=22 idle=7
-  > idle pid=0 prio=5 ('p0') tf=21 idle=7
   > idle pid=1 prio=5 ('p1') tf=21 idle=6
-  [t=19] run(2): (10,pid=4) (10,pid=5)  pend(3): (8,pid=2) (5,pid=0) (5,pid=1)
+  > idle pid=0 prio=5 ('p0') tf=21 idle=7
+  [t=19] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
 [t=20]
   > pid=2 prio=8 ('p2') cannot fit, no preemption
-  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > pid=1 prio=5 ('p1') cannot fit, no preemption
+  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > idle pid=2 prio=8 ('p2') tf=23 idle=8
-  > idle pid=0 prio=5 ('p0') tf=22 idle=8
   > idle pid=1 prio=5 ('p1') tf=22 idle=7
-  [t=20] run(2): (10,pid=4) (10,pid=5)  pend(3): (8,pid=2) (5,pid=0) (5,pid=1)
+  > idle pid=0 prio=5 ('p0') tf=22 idle=8
+  [t=20] run(2): (10,pid=5) (10,pid=4)  pend(3): (8,pid=2) (5,pid=1) (5,pid=0)
 [t=21]
   > process pid=4 prio=10 ('p4') finished after t=20
   > scheduled pid=2 prio=8 ('p2') pending -> running
   > CPU load: 18 / 20
-  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > pid=1 prio=5 ('p1') cannot fit, no preemption
-  > idle pid=0 prio=5 ('p0') tf=23 idle=9
+  > pid=0 prio=5 ('p0') cannot fit, no preemption
   > idle pid=1 prio=5 ('p1') tf=23 idle=8
-  [t=21] run(2): (8,pid=2) (10,pid=5)  pend(2): (5,pid=0) (5,pid=1)
+  > idle pid=0 prio=5 ('p0') tf=23 idle=9
+  [t=21] run(2): (8,pid=2) (10,pid=5)  pend(2): (5,pid=1) (5,pid=0)
 [t=22]
   > process pid=5 prio=10 ('p5') finished after t=21
-  > scheduled pid=0 prio=5 ('p0') pending -> running
-  > CPU load: 13 / 20
   > scheduled pid=1 prio=5 ('p1') pending -> running
+  > CPU load: 13 / 20
+  > scheduled pid=0 prio=5 ('p0') pending -> running
   > CPU load: 18 / 20
   [t=22] run(3): (5,pid=1) (8,pid=2) (5,pid=0)  pend(0):
 [t=23]

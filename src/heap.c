@@ -33,9 +33,7 @@ static void swap_ptrs(process_t **a, process_t **b) {
 static bool min_has_priority(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority < b->priority;
-    if (a->idle != b->idle)
-        return a->idle < b->idle;   /* lower idle preempted first */
-    return a->pid > b->pid;         /* higher pid as final tiebreaker */
+    return a->pid > b->pid;   /* deterministic tie-break only */
 }
 
 /**
@@ -47,11 +45,8 @@ static bool min_has_priority(const process_t *a, const process_t *b) {
 static bool max_has_priority(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority > b->priority;
-    if (a->idle != b->idle)
-        return a->idle > b->idle;   /* higher idle = more deserving = scheduled first */
-    return a->seq < b->seq;         /* earlier insertion wins (FIFO within bucket) */
+    return a->seq < b->seq;   /* FIFO within same priority */
 }
-
 /* ========================= MinHeap ========================= */
 
 void minheap_init(MinHeap *h, size_t capacity) {

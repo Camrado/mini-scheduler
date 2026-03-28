@@ -259,110 +259,110 @@
   > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
   > preempted pid=4 prio=5 ('p4') running -> pending
   > CPU load: 24 / 20
-  > preempted pid=1 prio=12 ('p1') running -> pending
+  > preempted pid=2 prio=12 ('p2') running -> pending
   > CPU load: 12 / 20
   > pid=3 prio=12 ('p3') cannot fit, no preemption
   > scheduled pid=5 prio=4 ('p5') pending -> running
   > CPU load: 16 / 20
-  > idle pid=3 prio=12 ('p3') tf=31 idle=23
+  > idle pid=2 prio=12 ('p2') tf=31 idle=23
   > idle pid=4 prio=5 ('p4') tf=28 idle=16
-  > idle pid=1 prio=12 ('p1') tf=30 idle=22
-  [t=22] run(2): (4,pid=5) (12,pid=2)  pend(3): (12,pid=3) (5,pid=4) (12,pid=1)
+  > idle pid=3 prio=12 ('p3') tf=31 idle=23
+  [t=22] run(2): (4,pid=5) (12,pid=1)  pend(3): (12,pid=2) (5,pid=4) (12,pid=3)
 [t=23]
-  > scheduled pid=3 prio=12 ('p3') pending -> running (preempting)
+  > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
   > preempted pid=5 prio=4 ('p5') running -> pending
   > CPU load: 24 / 20
   > preempted pid=2 prio=12 ('p2') running -> pending
   > CPU load: 12 / 20
-  > pid=1 prio=12 ('p1') cannot fit, no preemption
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
   > scheduled pid=4 prio=5 ('p4') pending -> running
   > CPU load: 17 / 20
-  > idle pid=2 prio=12 ('p2') tf=31 idle=23
+  > idle pid=2 prio=12 ('p2') tf=32 idle=24
   > idle pid=5 prio=4 ('p5') tf=25 idle=5
-  > idle pid=1 prio=12 ('p1') tf=31 idle=23
-  [t=23] run(2): (5,pid=4) (12,pid=3)  pend(3): (12,pid=2) (4,pid=5) (12,pid=1)
+  > idle pid=3 prio=12 ('p3') tf=32 idle=24
+  [t=23] run(2): (5,pid=4) (12,pid=1)  pend(3): (12,pid=2) (4,pid=5) (12,pid=3)
 [t=24]
   > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
   > preempted pid=4 prio=5 ('p4') running -> pending
   > CPU load: 24 / 20
-  > preempted pid=3 prio=12 ('p3') running -> pending
+  > preempted pid=2 prio=12 ('p2') running -> pending
   > CPU load: 12 / 20
-  > pid=1 prio=12 ('p1') cannot fit, no preemption
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
   > scheduled pid=5 prio=4 ('p5') pending -> running
   > CPU load: 16 / 20
-  > idle pid=3 prio=12 ('p3') tf=32 idle=24
+  > idle pid=2 prio=12 ('p2') tf=33 idle=25
   > idle pid=4 prio=5 ('p4') tf=29 idle=17
-  > idle pid=1 prio=12 ('p1') tf=32 idle=24
-  [t=24] run(2): (4,pid=5) (12,pid=2)  pend(3): (12,pid=3) (5,pid=4) (12,pid=1)
+  > idle pid=3 prio=12 ('p3') tf=33 idle=25
+  [t=24] run(2): (4,pid=5) (12,pid=1)  pend(3): (12,pid=2) (5,pid=4) (12,pid=3)
 [t=25]
-  > scheduled pid=3 prio=12 ('p3') pending -> running (preempting)
+  > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
   > preempted pid=5 prio=4 ('p5') running -> pending
   > CPU load: 24 / 20
   > preempted pid=2 prio=12 ('p2') running -> pending
   > CPU load: 12 / 20
-  > pid=1 prio=12 ('p1') cannot fit, no preemption
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
   > scheduled pid=4 prio=5 ('p4') pending -> running
   > CPU load: 17 / 20
-  > idle pid=1 prio=12 ('p1') tf=33 idle=25
+  > idle pid=2 prio=12 ('p2') tf=34 idle=26
   > idle pid=5 prio=4 ('p5') tf=26 idle=6
-  > idle pid=2 prio=12 ('p2') tf=32 idle=24
-  [t=25] run(2): (5,pid=4) (12,pid=3)  pend(3): (12,pid=1) (4,pid=5) (12,pid=2)
+  > idle pid=3 prio=12 ('p3') tf=34 idle=26
+  [t=25] run(2): (5,pid=4) (12,pid=1)  pend(3): (12,pid=2) (4,pid=5) (12,pid=3)
 [t=26]
-  > scheduled pid=1 prio=12 ('p1') pending -> running (preempting)
+  > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
   > preempted pid=4 prio=5 ('p4') running -> pending
   > CPU load: 24 / 20
-  > preempted pid=3 prio=12 ('p3') running -> pending
+  > preempted pid=2 prio=12 ('p2') running -> pending
   > CPU load: 12 / 20
-  > pid=2 prio=12 ('p2') cannot fit, no preemption
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
   > scheduled pid=5 prio=4 ('p5') pending -> running
   > CPU load: 16 / 20
-  > idle pid=3 prio=12 ('p3') tf=33 idle=25
+  > idle pid=2 prio=12 ('p2') tf=35 idle=27
   > idle pid=4 prio=5 ('p4') tf=30 idle=18
-  > idle pid=2 prio=12 ('p2') tf=33 idle=25
-  [t=26] run(2): (4,pid=5) (12,pid=1)  pend(3): (12,pid=3) (5,pid=4) (12,pid=2)
+  > idle pid=3 prio=12 ('p3') tf=35 idle=27
+  [t=26] run(2): (4,pid=5) (12,pid=1)  pend(3): (12,pid=2) (5,pid=4) (12,pid=3)
 [t=27]
   > process pid=5 prio=4 ('p5') finished after t=26
+  > pid=2 prio=12 ('p2') cannot fit, no preemption
   > pid=3 prio=12 ('p3') cannot fit, no preemption
-  > pid=2 prio=12 ('p2') cannot fit, no preemption
-  > scheduled pid=4 prio=5 ('p4') pending -> running
-  > CPU load: 17 / 20
-  > idle pid=3 prio=12 ('p3') tf=34 idle=26
-  > idle pid=2 prio=12 ('p2') tf=34 idle=26
-  [t=27] run(2): (5,pid=4) (12,pid=1)  pend(2): (12,pid=3) (12,pid=2)
-[t=28]
-  > scheduled pid=3 prio=12 ('p3') pending -> running (preempting)
-  > preempted pid=4 prio=5 ('p4') running -> pending
-  > CPU load: 24 / 20
-  > preempted pid=1 prio=12 ('p1') running -> pending
-  > CPU load: 12 / 20
-  > pid=2 prio=12 ('p2') cannot fit, no preemption
-  > idle pid=2 prio=12 ('p2') tf=35 idle=27
-  > idle pid=4 prio=5 ('p4') tf=31 idle=19
-  > idle pid=1 prio=12 ('p1') tf=34 idle=26
-  [t=28] run(1): (12,pid=3)  pend(3): (12,pid=2) (5,pid=4) (12,pid=1)
-[t=29]
-  > pid=2 prio=12 ('p2') cannot fit, no preemption
-  > pid=1 prio=12 ('p1') cannot fit, no preemption
   > scheduled pid=4 prio=5 ('p4') pending -> running
   > CPU load: 17 / 20
   > idle pid=2 prio=12 ('p2') tf=36 idle=28
-  > idle pid=1 prio=12 ('p1') tf=35 idle=27
-  [t=29] run(2): (5,pid=4) (12,pid=3)  pend(2): (12,pid=2) (12,pid=1)
+  > idle pid=3 prio=12 ('p3') tf=36 idle=28
+  [t=27] run(2): (5,pid=4) (12,pid=1)  pend(2): (12,pid=2) (12,pid=3)
+[t=28]
+  > scheduled pid=2 prio=12 ('p2') pending -> running (preempting)
+  > preempted pid=4 prio=5 ('p4') running -> pending
+  > CPU load: 24 / 20
+  > preempted pid=2 prio=12 ('p2') running -> pending
+  > CPU load: 12 / 20
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
+  > idle pid=2 prio=12 ('p2') tf=37 idle=29
+  > idle pid=4 prio=5 ('p4') tf=31 idle=19
+  > idle pid=3 prio=12 ('p3') tf=37 idle=29
+  [t=28] run(1): (12,pid=1)  pend(3): (12,pid=2) (5,pid=4) (12,pid=3)
+[t=29]
+  > pid=2 prio=12 ('p2') cannot fit, no preemption
+  > pid=3 prio=12 ('p3') cannot fit, no preemption
+  > scheduled pid=4 prio=5 ('p4') pending -> running
+  > CPU load: 17 / 20
+  > idle pid=2 prio=12 ('p2') tf=38 idle=30
+  > idle pid=3 prio=12 ('p3') tf=38 idle=30
+  [t=29] run(2): (5,pid=4) (12,pid=1)  pend(2): (12,pid=2) (12,pid=3)
 * Chronogram === 
 	|....|....|....|....|....|...
 p0	XXXXXXXXXX			 (tf=10,idle=0)
-p1	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=35,idle=27)
-p2	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=36,idle=28)
-p3	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=34,idle=26)
+p1	XXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=29,idle=21)
+p2	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=38,idle=30)
+p3	XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=38,idle=30)
 p4	      XXXXXXXXXXXXXXXXXXXXXXXXX			 (tf=31,idle=19)
 p5	              XXXXXXXXXXXX			 (tf=26,idle=6)
 p6	        XXXXXXXXXXXX			 (tf=20,idle=3)
 
 [===Results===]
 0	RRRRRRRRRRR__________________
-1	.....................R....RR.
-2	......................R.R....
-3	.......................R.R..R
+1	.....................RRRRRRRR
+2	.............................
+3	.............................
 4	.....................R.R.R.R.
 5	..............R.R.R.R.R.R.R__
 6	...........RRRRRRRRRR________

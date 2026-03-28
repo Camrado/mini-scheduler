@@ -50,13 +50,13 @@
   > CPU load: 19 / 20
   > scheduled pid=2 prio=1 ('bash') pending -> running
   > CPU load: 20 / 20
-  [t=10] run(5): (1,pid=1) (1,pid=2) (5,pid=4) (10,pid=0) (3,pid=6)  pend(3): (5,pid=7) (4,pid=8) (5,pid=9)
+  [t=10] run(5): (1,pid=2) (1,pid=1) (5,pid=4) (10,pid=0) (3,pid=6)  pend(3): (5,pid=7) (4,pid=8) (5,pid=9)
 [t=11]
   > pid=7 prio=5 ('crypt') queued into pending
   > scheduled pid=7 prio=5 ('crypt') pending -> running (preempting)
-  > preempted pid=1 prio=1 ('bash') running -> pending
-  > CPU load: 24 / 20
   > preempted pid=2 prio=1 ('bash') running -> pending
+  > CPU load: 24 / 20
+  > preempted pid=1 prio=1 ('bash') running -> pending
   > CPU load: 23 / 20
   > preempted pid=6 prio=3 ('ssh') running -> pending
   > CPU load: 20 / 20
@@ -72,9 +72,9 @@
   > CPU load: 19 / 20
   > scheduled pid=1 prio=1 ('bash') pending -> running
   > CPU load: 20 / 20
-  [t=12] run(5): (1,pid=1) (1,pid=2) (5,pid=7) (10,pid=0) (3,pid=6)  pend(2): (4,pid=8) (5,pid=9)
+  [t=12] run(5): (1,pid=2) (1,pid=1) (5,pid=7) (10,pid=0) (3,pid=6)  pend(2): (4,pid=8) (5,pid=9)
 [t=13]
-  [t=13] run(5): (1,pid=1) (1,pid=2) (5,pid=7) (10,pid=0) (3,pid=6)  pend(2): (4,pid=8) (5,pid=9)
+  [t=13] run(5): (1,pid=2) (1,pid=1) (5,pid=7) (10,pid=0) (3,pid=6)  pend(2): (4,pid=8) (5,pid=9)
 [t=14]
   > process pid=7 prio=5 ('crypt') finished after t=13
   > pid=8 prio=4 ('snake') queued into pending
@@ -82,9 +82,9 @@
   > scheduled pid=9 prio=5 ('cat') pending -> running
   > CPU load: 20 / 20
   > scheduled pid=8 prio=4 ('snake') pending -> running (preempting)
-  > preempted pid=1 prio=1 ('bash') running -> pending
-  > CPU load: 23 / 20
   > preempted pid=2 prio=1 ('bash') running -> pending
+  > CPU load: 23 / 20
+  > preempted pid=1 prio=1 ('bash') running -> pending
   > CPU load: 22 / 20
   > preempted pid=6 prio=3 ('ssh') running -> pending
   > CPU load: 19 / 20
@@ -106,16 +106,16 @@
   > CPU load: 18 / 20
   > scheduled pid=1 prio=1 ('bash') pending -> running
   > CPU load: 19 / 20
-  [t=16] run(5): (1,pid=1) (1,pid=2) (10,pid=0) (4,pid=8) (3,pid=6)  pend(0):
+  [t=16] run(5): (1,pid=2) (1,pid=1) (10,pid=0) (4,pid=8) (3,pid=6)  pend(0):
 [t=17]
   > process pid=8 prio=4 ('snake') finished after t=16
   > process pid=6 prio=3 ('ssh') finished after t=16
-  [t=17] run(3): (1,pid=1) (1,pid=2) (10,pid=0)  pend(0):
+  [t=17] run(3): (1,pid=2) (1,pid=1) (10,pid=0)  pend(0):
 [t=18]
-  [t=18] run(3): (1,pid=1) (1,pid=2) (10,pid=0)  pend(0):
+  [t=18] run(3): (1,pid=2) (1,pid=1) (10,pid=0)  pend(0):
 [t=19]
   > process pid=0 prio=10 ('init') finished after t=18
-  [t=19] run(2): (1,pid=1) (1,pid=2)  pend(0):
+  [t=19] run(2): (1,pid=2) (1,pid=1)  pend(0):
 [t=20]
   > process pid=1 prio=1 ('bash') finished after t=19
   [t=20] run(1): (1,pid=2)  pend(0):
