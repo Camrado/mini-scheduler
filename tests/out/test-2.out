@@ -1,0 +1,42 @@
+* Read from stdin ... 4 lines in data.
+* Loaded 4 lines of data.
+  [t=0] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=1] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=2] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=3] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=4] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=5] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=6] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=7] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=8] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=9] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=10] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
+  [t=11] run(1): (1,pid=1)  pend(1): (20,pid=2)
+  [t=12] run(1): (20,pid=2)  pend(1): (1,pid=1)
+  [t=13] run(1): (20,pid=2)  pend(1): (1,pid=1)
+  [t=14] run(1): (20,pid=2)  pend(1): (1,pid=1)
+  [t=15] run(1): (20,pid=2)  pend(1): (1,pid=1)
+  [t=16] run(1): (1,pid=1)  pend(0):
+  [t=17] run(1): (1,pid=1)  pend(0):
+  [t=18] run(1): (1,pid=1)  pend(0):
+  [t=19] run(1): (1,pid=1)  pend(0):
+  [t=20] run(1): (1,pid=1)  pend(0):
+  [t=21] run(1): (1,pid=1)  pend(0):
+  [t=22] run(1): (1,pid=1)  pend(0):
+  [t=23] run(0):  pend(0):
+  [t=24] run(0):  pend(0):
+  [t=25] run(0):  pend(0):
+  [t=26] run(0):  pend(0):
+  [t=27] run(0):  pend(0):
+  [t=28] run(0):  pend(0):
+  [t=29] run(0):  pend(0):
+* Chronogram === 
+	|....|....|....|....|....|...
+p0	XXXXXXXXXX			 (tf=10,idle=0)
+p2	  XXXXXXXXXXXXXXXXXXXX			 (tf=22,idle=12)
+p0	            XXX			 (tf=15,idle=0)
+
+[===Results===]
+0	RRRRRRRRRRR__________________
+1	...........R....RRRRRRR______
+2	............RRRR_____________
