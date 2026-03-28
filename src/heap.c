@@ -24,23 +24,32 @@ static void swap_ptrs(process_t **a, process_t **b) {
 }
 
 /**
- * Returns true if a should be *above* b in the MinHeap
- * (i.e. a has a strictly lower priority, or equal priority with lower pid).
+ * Returns true if a should be *above* b in the MinHeap.
+ * Lower priority value = top of heap (preempted first).
+ * Tie-break 1: lower idle count = top of heap. A process that has been
+ *   delayed less is considered less "deserving" and is preempted first.
+ * Tie-break 2: higher pid = top of heap (final deterministic tiebreaker).
  */
 static bool min_has_priority(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority < b->priority;
-    return a->pid < b->pid;
+    if (a->idle != b->idle)
+        return a->idle < b->idle;   /* lower idle preempted first */
+    return a->pid > b->pid;         /* higher pid as final tiebreaker */
 }
 
 /**
- * Returns true if a should be *above* b in the MaxHeap
- * (i.e. a has a strictly higher priority, or equal priority with higher pid).
+ * Returns true if a should be *above* b in the MaxHeap.
+ * Higher priority value = top of heap (scheduled first).
+ * Tie-break: lower pid = top of heap, so among equal-priority pending
+ * processes the one with the lowest pid is scheduled first.
  */
 static bool max_has_priority(const process_t *a, const process_t *b) {
     if (a->priority != b->priority)
         return a->priority > b->priority;
-    return a->pid > b->pid;
+    if (a->idle != b->idle)
+        return a->idle > b->idle;   /* higher idle = more deserving = scheduled first */
+    return a->seq < b->seq;         /* earlier insertion wins (FIFO within bucket) */
 }
 
 /* ========================= MinHeap ========================= */

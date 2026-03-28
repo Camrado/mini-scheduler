@@ -40,6 +40,8 @@ typedef struct {
     size_t idle;        /**< accumulated idle ticks                          */
     char   cmd[32];     /**< command name (for logging / chronogram)         */
     int    priority;    /**< cpu scheduling priority — heap key in both queues*/
+    size_t seq;   /* insertion sequence number — FIFO tiebreak in MaxHeap */
+
 } process_t;
 
 /* -----------------------------------------------------------------------

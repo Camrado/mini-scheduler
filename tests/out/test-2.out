@@ -14,35 +14,35 @@
   [t=2] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=3]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=12 idle=1
+  > idle pid=1 prio=1 ('p2') tf=12 idle=2
   [t=3] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=4]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=13 idle=1
+  > idle pid=1 prio=1 ('p2') tf=13 idle=3
   [t=4] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=5]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=14 idle=1
+  > idle pid=1 prio=1 ('p2') tf=14 idle=4
   [t=5] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=6]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=15 idle=1
+  > idle pid=1 prio=1 ('p2') tf=15 idle=5
   [t=6] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=7]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=16 idle=1
+  > idle pid=1 prio=1 ('p2') tf=16 idle=6
   [t=7] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=8]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=17 idle=1
+  > idle pid=1 prio=1 ('p2') tf=17 idle=7
   [t=8] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=9]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=18 idle=1
+  > idle pid=1 prio=1 ('p2') tf=18 idle=8
   [t=9] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=10]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=19 idle=1
+  > idle pid=1 prio=1 ('p2') tf=19 idle=9
   [t=10] run(1): (20,pid=0)  pend(2): (1,pid=1) (20,pid=2)
 [t=11]
   > process pid=0 prio=20 ('p0') finished after t=10
@@ -54,19 +54,19 @@
   > scheduled pid=2 prio=20 ('p0') pending -> running (preempting)
   > preempted pid=1 prio=1 ('p2') running -> pending
   > CPU load: 20 / 20
-  > idle pid=1 prio=1 ('p2') tf=20 idle=2
+  > idle pid=1 prio=1 ('p2') tf=20 idle=10
   [t=12] run(1): (20,pid=2)  pend(1): (1,pid=1)
 [t=13]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=21 idle=1
+  > idle pid=1 prio=1 ('p2') tf=21 idle=11
   [t=13] run(1): (20,pid=2)  pend(1): (1,pid=1)
 [t=14]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=22 idle=1
+  > idle pid=1 prio=1 ('p2') tf=22 idle=12
   [t=14] run(1): (20,pid=2)  pend(1): (1,pid=1)
 [t=15]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=23 idle=1
+  > idle pid=1 prio=1 ('p2') tf=23 idle=13
   [t=15] run(1): (20,pid=2)  pend(1): (1,pid=1)
 [t=16]
   > process pid=2 prio=20 ('p0') finished after t=15
@@ -103,7 +103,7 @@
 * Chronogram === 
 	|....|....|....|....|....|...
 p0	XXXXXXXXXX			 (tf=10,idle=0)
-p2	  XXXXXXXXXXXXXXXXXXXXX			 (tf=23,idle=1)
+p2	  XXXXXXXXXXXXXXXXXXXXX			 (tf=23,idle=13)
 p0	            XXX			 (tf=15,idle=0)
 
 [===Results===]

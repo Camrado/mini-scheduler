@@ -14,35 +14,35 @@
   [t=2] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=3]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=12 idle=1
+  > idle pid=1 prio=1 ('p2') tf=12 idle=2
   [t=3] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=4]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=13 idle=1
+  > idle pid=1 prio=1 ('p2') tf=13 idle=3
   [t=4] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=5]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=14 idle=1
+  > idle pid=1 prio=1 ('p2') tf=14 idle=4
   [t=5] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=6]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=15 idle=1
+  > idle pid=1 prio=1 ('p2') tf=15 idle=5
   [t=6] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=7]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=16 idle=1
+  > idle pid=1 prio=1 ('p2') tf=16 idle=6
   [t=7] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=8]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=17 idle=1
+  > idle pid=1 prio=1 ('p2') tf=17 idle=7
   [t=8] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=9]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=18 idle=1
+  > idle pid=1 prio=1 ('p2') tf=18 idle=8
   [t=9] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=10]
   > pid=1 prio=1 ('p2') cannot fit, no preemption
-  > idle pid=1 prio=1 ('p2') tf=19 idle=1
+  > idle pid=1 prio=1 ('p2') tf=19 idle=9
   [t=10] run(1): (20,pid=0)  pend(1): (1,pid=1)
 [t=11]
   > process pid=0 prio=20 ('p0') finished after t=10
@@ -89,7 +89,7 @@
 * Chronogram === 
 	|....|....|....|....|....|...
 p0	XXXXXXXXXX			 (tf=10,idle=0)
-p2	  XXXXXXXXXXXXXXXXX			 (tf=19,idle=1)
+p2	  XXXXXXXXXXXXXXXXX			 (tf=19,idle=9)
 
 [===Results===]
 0	RRRRRRRRRRR__________________

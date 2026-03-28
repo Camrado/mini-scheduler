@@ -143,6 +143,13 @@ static void remove_finished_processes(MinHeap *runningQueue, size_t t,
 }
 
 /* -----------------------------------------------------------------------
+ * Monotonically increasing sequence counter.
+ * Stamped onto process_t just before each maxheap_insert so the MaxHeap
+ * can use FIFO ordering as a final tiebreaker within equal priority+idle.
+ * ----------------------------------------------------------------------- */
+static size_t g_sched_seq = 0;
+
+/* -----------------------------------------------------------------------
  * add_arrived_to_pending
  *
  * Any process whose ts == t is newly available — insert into pendingQueue.
@@ -152,6 +159,7 @@ static void add_arrived_to_pending(MaxHeap *pendingQueue,
                                    size_t t) {
     for (size_t i = 0; i < procCount; i++) {
         if (procs[i].ts == t) {
+            procs[i].seq = g_sched_seq++;
             maxheap_insert(pendingQueue, &procs[i]);
             printf("  > pid=%d prio=%d ('%s') queued into pending\n",
                    procs[i].pid, procs[i].priority, procs[i].cmd);
@@ -162,29 +170,19 @@ static void add_arrived_to_pending(MaxHeap *pendingQueue,
 /* -----------------------------------------------------------------------
  * increment_idle_counters
  *
- * For every process still in pendingQueue:
- *   - If this is the first tick it is idle (idle == 0), mark idle = 1 and
- *     extend tf by 1 (it lost a tick it should have run).
- *   - If it was already idle (idle > 0), increment both idle and tf.
+ * For every process still in pendingQueue after the scheduling pass,
+ * increment its idle counter by 1.  tf was already extended once in
+ * step 3 (either the preemption evict path or the cannot-fit path), so
+ * we do NOT touch tf here — that would double-count.
  *
- * We snapshot oldTf before the scheduling pass so we can detect which
- * entries had their tf already bumped during preemption this tick vs. which
- * are genuinely waiting a fresh tick.
+ * The oldTf snapshot is no longer needed for this function; it was
+ * removed along with the incorrect "first-time vs subsequent" branching
+ * that caused idle to reset to 1 instead of accumulating.
  * ----------------------------------------------------------------------- */
-static void increment_idle_counters(MaxHeap *pendingQueue,
-                                    const size_t *oldTf) {
+static void increment_idle_counters(MaxHeap *pendingQueue) {
     for (size_t i = 1; i <= pendingQueue->size; i++) {
         process_t *proc = pendingQueue->array[i];
-
-        if (proc->tf != oldTf[proc->pid]) {
-            /* tf was already advanced by preemption logic this tick */
-            proc->idle = 1;
-        } else if (proc->idle > 0) {
-            /* was idle last tick too — keep accumulating */
-            proc->idle++;
-            proc->tf++;
-        }
-
+        proc->idle++;
         printf("  > idle pid=%d prio=%d ('%s') tf=%zu idle=%zu\n",
                proc->pid, proc->priority, proc->cmd, proc->tf, proc->idle);
     }
@@ -301,12 +299,6 @@ void time_loop(size_t workload_size, size_t ts, size_t tf,
     for (size_t t = ts; t <= tf; t++) {
         printf("[t=%zu]\n", t);
 
-        /* Snapshot tf before scheduling changes it (for idle detection) */
-        size_t *oldTf = malloc(workload_size * sizeof(size_t));
-        if (!oldTf) { perror("time_loop: malloc oldTf"); break; }
-        for (size_t i = 0; i < workload_size; i++)
-            oldTf[i] = procs[i].tf;
-
         /* Step 1: evict finished processes from runningQueue */
         remove_finished_processes(&runningQueue, t, &prioritySum);
 
@@ -362,8 +354,8 @@ void time_loop(size_t workload_size, size_t ts, size_t tf,
                         printf("  > preempted pid=%d prio=%d ('%s') running -> pending\n",
                                evict->pid, evict->priority, evict->cmd);
 
-                        /* First idle tick — extend tf */
-                        if (evict->idle == 0) evict->tf++;
+                        /* Always extend tf: this process lost a runnable tick */
+                        evict->tf++;
                         holdQueue[holdCount++] = evict;
 
                         printf("  > CPU load: %d / %d\n", prioritySum, CPU_CAPABILITY);
@@ -381,13 +373,14 @@ void time_loop(size_t workload_size, size_t ts, size_t tf,
         }
 
         /* Re-insert held-back processes into pendingQueue */
-        for (size_t i = 0; i < holdCount; i++)
+        for (size_t i = 0; i < holdCount; i++) {
+            holdQueue[i]->seq = g_sched_seq++;
             maxheap_insert(&pendingQueue, holdQueue[i]);
+        }
         free(holdQueue);
 
         /* Step 4: increment idle counters for processes still pending */
-        increment_idle_counters(&pendingQueue, oldTf);
-        free(oldTf);
+        increment_idle_counters(&pendingQueue);
 
         /* Step 5: record timeline and print tick summary */
         record_state(t, tf + 1, timeline,

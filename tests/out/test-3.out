@@ -11,21 +11,21 @@
   > pid=1 prio=5 ('p1') queued into pending
   > scheduled pid=1 prio=5 ('p1') pending -> running
   > CPU load: 10 / 20
-  [t=2] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=2] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=3]
-  [t=3] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=3] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=4]
-  [t=4] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=4] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=5]
-  [t=5] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=5] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=6]
-  [t=6] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=6] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=7]
-  [t=7] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=7] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=8]
-  [t=8] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=8] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=9]
-  [t=9] run(2): (5,pid=0) (5,pid=1)  pend(1): (15,pid=2)
+  [t=9] run(2): (5,pid=1) (5,pid=0)  pend(1): (15,pid=2)
 [t=10]
   > process pid=0 prio=5 ('p0') finished after t=9
   [t=10] run(1): (5,pid=1)  pend(1): (15,pid=2)
