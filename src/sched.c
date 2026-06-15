@@ -5,10 +5,9 @@
 #include "trace.h"
 #include "process.h"
 #include "cpu.h"
+#include "heap.h"
 
 #define END_STEP 30
-
-
 
 struct workload_item_t {
 	int pid;       //< the event id
@@ -131,148 +130,251 @@ size_t read_data(size_t workload_size, FILE *file) {
 	return count;
 }
 
-/* -----------------------------------------------------------------------
- * Helpers for time_loop
- * ----------------------------------------------------------------------- */
-
-/**
- * @brief Comparison function for qsort: sorts process array by descending
- *        priority so we can greedily fill the CPU from highest prio down.
+/*
+ * scan runningQueue and remove any process whose tf < t
+ * we can't just iterate and pop because remove_at shifts elements,
+ * so we only advance i when we didn't remove anything
  */
-static int cmp_prio_desc(const void *a, const void *b) {
-    const process *pa = (const process *)a;
-    const process *pb = (const process *)b;
-    /* higher prio first */
-    return pb->prio - pa->prio;
+static void remove_finished_processes(Heap *runningQueue, size_t t,
+                                      int *prioritySum) {
+    size_t i = 0;
+    while (i < runningQueue->size) {
+        process_t *proc = runningQueue->arr[i];
+        if (proc->tf < t) {
+            printf("  > process pid=%d prio=%d ('%s') finished after t=%zu\n",
+                   proc->pid, proc->priority, proc->cmd, t - 1);
+            *prioritySum -= proc->priority;
+            heap_remove_at(runningQueue, i);
+            /* do NOT increment i - the slot was filled by the last element */
+        } else {
+            i++;
+        }
+    }
 }
-
-/**
- * @brief Determine whether process i was in the run queue at the previous
- *        timestep, by checking if the timeline recorded it as 'running'.
- *
- * @param i          workload index of the process
- * @param t          current timestep (>= 1)
- * @param timeline   the 2-D pstate array [timestep][process_index]
- * @return true if process i was running at t-1
+ 
+/* monotonically increasing counter stamped on each proc when it enters pendingQueue
+ * this lets max_cmp use FIFO order as a tiebreaker */
+static size_t g_sched_seq = 0;
+ 
+/* put newly arrived procs (ts == t) into pendingQueue */
+static void add_arrived_to_pending(Heap *pendingQueue,
+                                   process_t *procs, size_t procCount,
+                                   size_t t) {
+    for (size_t i = 0; i < procCount; i++) {
+        if (procs[i].ts == t) {
+            procs[i].seq = g_sched_seq++;
+            heap_insert(pendingQueue, &procs[i]);
+            printf("  > pid=%d prio=%d ('%s') queued into pending\n",
+                   procs[i].pid, procs[i].priority, procs[i].cmd);
+        }
+    }
+}
+ 
+/* bump idle counter for every proc still waiting in pendingQueue
+ * tf was already extended in step 3 so we don't touch it here */
+static void increment_idle_counters(Heap *pendingQueue) {
+    for (size_t i = 0; i < pendingQueue->size; i++) {
+        process_t *proc = pendingQueue->arr[i];
+        proc->idle++;
+        printf("  > idle pid=%d prio=%d ('%s') tf=%zu idle=%zu\n",
+               proc->pid, proc->priority, proc->cmd, proc->tf, proc->idle);
+    }
+}
+ 
+/*
+ * build the run/pend arrays and call record_timeline
+ * trace infrastructure expects these flat arrays, so we fill them from the heaps
+ * also include procs that haven't arrived yet as pending (trace expects them)
  */
-static bool was_running(size_t i, size_t t, pstate **timeline) {
-    if (t == 0) return false;
-    return timeline[i][t - 1] == running;
-}
-
-/* -----------------------------------------------------------------------
- * time_loop
- *
- * Simulates the scheduler from timestep ts to tf (inclusive).
- *
- * Algorithm at each timestep t:
- *   1. Collect "current" processes: ts_i <= t <= tf_i  (alive and started)
- *   2. Sort them by priority descending.
- *   3. Greedily assign to run queue while sum(prio) <= CPU_CAPABILITY.
- *      The remaining current processes go to the pending (wait) queue.
- *   4. Any current process that was running at t-1 but is now in the
- *      pending queue has been de-scheduled: increment its idle counter
- *      and its tf (finish time is pushed back by 1).
- *   5. Record the state of every process in the timeline:
- *        - finished (tf_i < t)  -> recorded later by print_timeline as '_'
- *        - running              -> 'R'
- *        - pending/waiting      -> '.'
- *      We call record_timeline() which handles this via the run/pend arrays.
- * ----------------------------------------------------------------------- */
-void time_loop(size_t workload_size, size_t ts, size_t tf, size_t ncpus, pstate **timeline) {
-    (void)ncpus;
-
-    process *run  = malloc(sizeof(process) * workload_size);
-    process *pend = malloc(sizeof(process) * workload_size);
-
-    if (!run || !pend) {
-        perror("time_loop: malloc");
-        free(run);
-        free(pend);
-        return;
+static void record_state(size_t t, size_t tf_limit,
+                         pstate **timeline,
+                         Heap *runningQueue, Heap *pendingQueue,
+                         process_t *procs, size_t procCount,
+                         size_t workload_size) {
+    process *run  = malloc(sizeof(process) * runningQueue->size);
+    process *pend = malloc(sizeof(process) * (pendingQueue->size + procCount));
+ 
+    size_t nb_run  = 0;
+    size_t nb_pend = 0;
+ 
+    for (size_t i = 0; i < runningQueue->size; i++) {
+        process_t *p = runningQueue->arr[i];
+        if (p->tf >= t) {
+            run[nb_run].pid  = p->pid;
+            run[nb_run].prio = p->priority;
+            nb_run++;
+        }
     }
-
-    for (size_t t = ts; t <= tf; t++) {
-        size_t nb_run  = 0;
-        size_t nb_pend = 0;
-
-        process *candidates = malloc(sizeof(process) * workload_size);
-        size_t nb_cand = 0;
-
-        if (!candidates) {
-            perror("time_loop: malloc");
-            free(run);
-            free(pend);
-            return;
+ 
+    for (size_t i = 0; i < pendingQueue->size; i++) {
+        process_t *p = pendingQueue->arr[i];
+        if (p->tf >= t) {
+            pend[nb_pend].pid  = p->pid;
+            pend[nb_pend].prio = p->priority;
+            nb_pend++;
         }
-
-        /* Step 1: collect current processes only */
-        for (size_t i = 0; i < workload_size; i++) {
-            if (workload[i].ts <= t && t <= workload[i].tf) {
-                candidates[nb_cand].prio = workload[i].prio;
-                candidates[nb_cand].pid  = i;
-                nb_cand++;
-            }
-        }
-
-        /* Step 2: sort current processes by descending priority */
-        qsort(candidates, nb_cand, sizeof(process), cmp_prio_desc);
-
-        /* Step 3: greedily fill running queue up to CPU capability */
-        int prio_sum = 0;
-        for (size_t c = 0; c < nb_cand; c++) {
-            int p = candidates[c].prio;
-            if (prio_sum + p <= CPU_CAPABILITY) {
-                run[nb_run++] = candidates[c];
-                prio_sum += p;
-            } else {
-                pend[nb_pend++] = candidates[c];
-            }
-        }
-
-        /* Step 4: future processes are also pending */
-        for (size_t i = 0; i < workload_size; i++) {
-            if (t < workload[i].ts) {
-                pend[nb_pend].prio = workload[i].prio;
-                pend[nb_pend].pid  = i;
-                nb_pend++;
-            }
-        }
-
-        free(candidates);
-
-		/* Step 5: every already-started process that is pending at this timestep
-		   loses one time unit and therefore gets idle++ and tf++ */
-		for (size_t j = 0; j < nb_pend; j++) {
-		    size_t idx = pend[j].pid;
-		
-		    /* future processes are pending but should not be penalized yet */
-		    if (workload[idx].ts < t && t <= workload[idx].tf) {
-		        workload[idx].idle++;
-		        workload[idx].tf++;
-		    }
-		}
-
-        /* Step 6: record timeline */
-        record_timeline(t, tf + 1,
-                        timeline,
-                        run,  nb_run,
-                        pend, nb_pend,
-                        workload_size);
-
-        printf("  [t=%zu] run(%zu):", t, nb_run);
-        for (size_t r = 0; r < nb_run; r++)
-            printf(" (%d,pid=%zu)", run[r].prio, run[r].pid);
-
-        printf("  pend(%zu):", nb_pend);
-        for (size_t p = 0; p < nb_pend; p++)
-            printf(" (%d,pid=%zu)", pend[p].prio, pend[p].pid);
-
-        printf("\n");
     }
-
+ 
+    /* future procs are still shown as pending in the timeline */
+    for (size_t i = 0; i < procCount; i++) {
+        if (procs[i].ts > t) {
+            pend[nb_pend].pid  = procs[i].pid;
+            pend[nb_pend].prio = procs[i].priority;
+            nb_pend++;
+        }
+    }
+ 
+    record_timeline(t, tf_limit, timeline,
+                    run, nb_run,
+                    pend, nb_pend,
+                    workload_size);
+ 
+    /* Console log for this tick */
+    printf("  [t=%zu] run(%zu):", t, nb_run);
+    for (size_t r = 0; r < nb_run; r++)
+        printf(" (%d,pid=%d)", run[r].prio, run[r].pid);
+    printf("  pend(%zu):", nb_pend);
+    for (size_t p = 0; p < nb_pend; p++)
+        printf(" (%d,pid=%d)", pend[p].prio, pend[p].pid);
+    printf("\n");
+ 
     free(run);
     free(pend);
+}
+ 
+/*
+ * main scheduling loop
+ *
+ * builds a process_t pool from workload[], runs two-queue scheduler
+ * tick by tick, then writes tf/idle back for the chronogram
+ */
+void time_loop(size_t workload_size, size_t ts, size_t tf,
+               size_t ncpus, pstate **timeline) {
+    (void)ncpus; /* single logical CPU with capacity CPU_CAPABILITY */
+ 
+    /* one process_t per workload entry - heaps point into this pool */
+    process_t *procs = calloc(workload_size, sizeof(process_t));
+    if (!procs) { perror("time_loop: calloc procs"); return; }
+ 
+    for (size_t i = 0; i < workload_size; i++) {
+        procs[i].pid      = workload[i].pid;
+        procs[i].ppid     = workload[i].ppid;
+        procs[i].ts       = workload[i].ts;
+        procs[i].tf       = workload[i].tf;
+        procs[i].idle     = workload[i].idle;
+        procs[i].priority = workload[i].prio;
+        /* safe copy of cmd (process_t.cmd is a fixed 32-char buffer) */
+        strncpy(procs[i].cmd, workload[i].cmd, sizeof(procs[i].cmd) - 1);
+        procs[i].cmd[sizeof(procs[i].cmd) - 1] = '\0';
+    }
+ 
+    /* both queues are the same Heap type, just different comparators */
+    Heap runningQueue;
+    Heap pendingQueue;
+    heap_init(&runningQueue, workload_size, min_cmp);   /* weakest at top */
+    heap_init(&pendingQueue, workload_size, max_cmp);   /* strongest at top */
+ 
+    int prioritySum = 0; /* sum of priorities of currently running processes */
+ 
+    for (size_t t = ts; t <= tf; t++) {
+        printf("[t=%zu]\n", t);
+ 
+        /* Step 1: evict finished processes from runningQueue */
+        remove_finished_processes(&runningQueue, t, &prioritySum);
+ 
+        /* Step 2: enqueue newly arrived processes into pendingQueue */
+        add_arrived_to_pending(&pendingQueue, procs, workload_size, t);
+ 
+        /*
+         * Step 3: try to promote pending -> running
+         *
+         * pop best candidate from pendingQueue and check if it fits
+         * if it fits under CPU_CAPABILITY: schedule it directly
+         * if not: check if we can preempt the weakest running proc
+         *   - candidate beats lowest runner -> preempt, then evict until under cap.
+         *   - otherwise: bump candidate's tf and hold it for re-insertion.
+         *
+         * held-back procs go into holdQueue and are re-inserted after the loop
+         * so they get a fresh seq number and don't mess up pending ordering
+         */
+        process_t **holdQueue = malloc(sizeof(process_t *) * pendingQueue.capacity + 1);
+        size_t holdCount = 0;
+ 
+        while (!heap_empty(&pendingQueue)) {
+            process_t *candidate = heap_top(&pendingQueue);
+ 
+            if (prioritySum + candidate->priority <= CPU_CAPABILITY) {
+                /* Candidate fits - schedule it */
+                heap_pop(&pendingQueue);
+                printf("  > scheduled pid=%d prio=%d ('%s') pending -> running\n",
+                       candidate->pid, candidate->priority, candidate->cmd);
+                heap_insert(&runningQueue, candidate);
+                prioritySum += candidate->priority;
+                printf("  > CPU load: %d / %d\n", prioritySum, CPU_CAPABILITY);
+ 
+            } else {
+                /* Candidate doesn't fit - check for preemption */
+                process_t *lowest = heap_top(&runningQueue);
+ 
+                if (lowest != NULL && candidate->priority > lowest->priority) {
+                    /* Preempt the lowest-priority running process */
+                    heap_pop(&pendingQueue);
+                    printf("  > scheduled pid=%d prio=%d ('%s') pending -> running (preempting)\n",
+                           candidate->pid, candidate->priority, candidate->cmd);
+                    heap_insert(&runningQueue, candidate);
+                    prioritySum += candidate->priority;
+ 
+                    /* Evict until we are back within capacity */
+                    while (prioritySum > CPU_CAPABILITY && !heap_empty(&runningQueue)) {
+                        process_t *evict = heap_top(&runningQueue);
+                        heap_pop(&runningQueue);
+                        prioritySum -= evict->priority;
+ 
+                        printf("  > preempted pid=%d prio=%d ('%s') running -> pending\n",
+                               evict->pid, evict->priority, evict->cmd);
+ 
+                        evict->tf++;
+                        holdQueue[holdCount++] = evict;
+ 
+                        printf("  > CPU load: %d / %d\n", prioritySum, CPU_CAPABILITY);
+                    }
+ 
+                } else {
+                    /* No preemption possible - candidate stays pending */
+                    printf("  > pid=%d prio=%d ('%s') cannot fit, no preemption\n",
+                           candidate->pid, candidate->priority, candidate->cmd);
+                    heap_pop(&pendingQueue);
+                    candidate->tf++;
+                    holdQueue[holdCount++] = candidate;
+                }
+            }
+        }
+ 
+        /* put held-back procs back into pending with a fresh seq stamp */
+        for (size_t i = 0; i < holdCount; i++) {
+            holdQueue[i]->seq = g_sched_seq++;
+            heap_insert(&pendingQueue, holdQueue[i]);
+        }
+        free(holdQueue);
+ 
+        /* Step 4: increment idle counters for processes still pending */
+        increment_idle_counters(&pendingQueue);
+ 
+        /* Step 5: record timeline and print tick summary */
+        record_state(t, tf + 1, timeline,
+                     &runningQueue, &pendingQueue,
+                     procs, workload_size, workload_size);
+    }
+ 
+    /* copy final tf/idle back so chronogram() can read them */
+    for (size_t i = 0; i < workload_size; i++) {
+        workload[i].tf   = procs[i].tf;
+        workload[i].idle = procs[i].idle;
+    }
+ 
+    heap_free(&runningQueue);
+    heap_free(&pendingQueue);
+    free(procs);
 }
 
 /**

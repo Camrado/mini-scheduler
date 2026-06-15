@@ -1,34 +1,116 @@
 * Read from stdin ... 11 lines in data.
 * Loaded 11 lines of data.
+[t=0]
+  > pid=0 prio=10 ('init') queued into pending
+  > scheduled pid=0 prio=10 ('init') pending -> running
+  > CPU load: 10 / 20
   [t=0] run(1): (10,pid=0)  pend(9): (1,pid=1) (1,pid=2) (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=1] run(2): (10,pid=0) (1,pid=1)  pend(8): (1,pid=2) (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=2] run(2): (10,pid=0) (1,pid=1)  pend(8): (1,pid=2) (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=3] run(3): (10,pid=0) (1,pid=1) (1,pid=2)  pend(7): (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=4] run(4): (10,pid=0) (2,pid=3) (1,pid=1) (1,pid=2)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=5] run(4): (10,pid=0) (2,pid=3) (1,pid=1) (1,pid=2)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=6] run(4): (10,pid=0) (2,pid=3) (1,pid=1) (1,pid=2)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=7] run(4): (10,pid=0) (5,pid=4) (1,pid=1) (1,pid=2)  pend(5): (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=8] run(4): (10,pid=0) (5,pid=4) (4,pid=5) (1,pid=1)  pend(5): (1,pid=2) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=9] run(4): (10,pid=0) (5,pid=4) (4,pid=5) (1,pid=1)  pend(5): (1,pid=2) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=10] run(4): (10,pid=0) (3,pid=6) (1,pid=1) (1,pid=2)  pend(3): (5,pid=7) (4,pid=8) (5,pid=9)
-  [t=11] run(5): (10,pid=0) (5,pid=7) (3,pid=6) (1,pid=1) (1,pid=2)  pend(2): (4,pid=8) (5,pid=9)
-  [t=12] run(5): (10,pid=0) (5,pid=7) (3,pid=6) (1,pid=1) (1,pid=2)  pend(2): (4,pid=8) (5,pid=9)
-  [t=13] run(5): (10,pid=0) (5,pid=7) (3,pid=6) (1,pid=1) (1,pid=2)  pend(2): (4,pid=8) (5,pid=9)
-  [t=14] run(4): (10,pid=0) (5,pid=9) (4,pid=8) (1,pid=1)  pend(1): (1,pid=2)
-  [t=15] run(4): (10,pid=0) (5,pid=9) (4,pid=8) (1,pid=1)  pend(1): (1,pid=2)
-  [t=16] run(4): (10,pid=0) (4,pid=8) (1,pid=1) (1,pid=2)  pend(0):
-  [t=17] run(2): (10,pid=0) (1,pid=2)  pend(0):
-  [t=18] run(2): (10,pid=0) (1,pid=2)  pend(0):
+[t=1]
+  > pid=1 prio=1 ('bash') queued into pending
+  > scheduled pid=1 prio=1 ('bash') pending -> running
+  > CPU load: 11 / 20
+  [t=1] run(2): (1,pid=1) (10,pid=0)  pend(8): (1,pid=2) (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=2]
+  [t=2] run(2): (1,pid=1) (10,pid=0)  pend(8): (1,pid=2) (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=3]
+  > pid=2 prio=1 ('bash') queued into pending
+  > scheduled pid=2 prio=1 ('bash') pending -> running
+  > CPU load: 12 / 20
+  [t=3] run(3): (1,pid=2) (10,pid=0) (1,pid=1)  pend(7): (2,pid=3) (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=4]
+  > pid=3 prio=2 ('find') queued into pending
+  > scheduled pid=3 prio=2 ('find') pending -> running
+  > CPU load: 14 / 20
+  [t=4] run(4): (1,pid=2) (2,pid=3) (1,pid=1) (10,pid=0)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=5]
+  [t=5] run(4): (1,pid=2) (2,pid=3) (1,pid=1) (10,pid=0)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=6]
+  [t=6] run(4): (1,pid=2) (2,pid=3) (1,pid=1) (10,pid=0)  pend(6): (5,pid=4) (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=7]
+  > process pid=3 prio=2 ('find') finished after t=6
+  > pid=4 prio=5 ('gcc') queued into pending
+  > scheduled pid=4 prio=5 ('gcc') pending -> running
+  > CPU load: 17 / 20
+  [t=7] run(4): (1,pid=2) (5,pid=4) (1,pid=1) (10,pid=0)  pend(5): (4,pid=5) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=8]
+  > pid=5 prio=4 ('ld') queued into pending
+  > scheduled pid=5 prio=4 ('ld') pending -> running (preempting)
+  > preempted pid=2 prio=1 ('bash') running -> pending
+  > CPU load: 20 / 20
+  > idle pid=2 prio=1 ('bash') tf=17 idle=1
+  [t=8] run(4): (1,pid=1) (4,pid=5) (5,pid=4) (10,pid=0)  pend(5): (1,pid=2) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=9]
+  > pid=2 prio=1 ('bash') cannot fit, no preemption
+  > idle pid=2 prio=1 ('bash') tf=18 idle=2
+  [t=9] run(4): (1,pid=1) (4,pid=5) (5,pid=4) (10,pid=0)  pend(5): (1,pid=2) (3,pid=6) (5,pid=7) (4,pid=8) (5,pid=9)
+[t=10]
+  > process pid=5 prio=4 ('ld') finished after t=9
+  > process pid=4 prio=5 ('gcc') finished after t=9
+  > pid=6 prio=3 ('ssh') queued into pending
+  > scheduled pid=6 prio=3 ('ssh') pending -> running
+  > CPU load: 14 / 20
+  > scheduled pid=2 prio=1 ('bash') pending -> running
+  > CPU load: 15 / 20
+  [t=10] run(4): (1,pid=2) (1,pid=1) (3,pid=6) (10,pid=0)  pend(3): (5,pid=7) (4,pid=8) (5,pid=9)
+[t=11]
+  > pid=7 prio=5 ('crypt') queued into pending
+  > scheduled pid=7 prio=5 ('crypt') pending -> running
+  > CPU load: 20 / 20
+  [t=11] run(5): (1,pid=2) (1,pid=1) (3,pid=6) (10,pid=0) (5,pid=7)  pend(2): (4,pid=8) (5,pid=9)
+[t=12]
+  [t=12] run(5): (1,pid=2) (1,pid=1) (3,pid=6) (10,pid=0) (5,pid=7)  pend(2): (4,pid=8) (5,pid=9)
+[t=13]
+  [t=13] run(5): (1,pid=2) (1,pid=1) (3,pid=6) (10,pid=0) (5,pid=7)  pend(2): (4,pid=8) (5,pid=9)
+[t=14]
+  > process pid=6 prio=3 ('ssh') finished after t=13
+  > process pid=7 prio=5 ('crypt') finished after t=13
+  > pid=8 prio=4 ('snake') queued into pending
+  > pid=9 prio=5 ('cat') queued into pending
+  > scheduled pid=9 prio=5 ('cat') pending -> running
+  > CPU load: 17 / 20
+  > scheduled pid=8 prio=4 ('snake') pending -> running (preempting)
+  > preempted pid=2 prio=1 ('bash') running -> pending
+  > CPU load: 20 / 20
+  > idle pid=2 prio=1 ('bash') tf=19 idle=3
+  [t=14] run(4): (1,pid=1) (4,pid=8) (10,pid=0) (5,pid=9)  pend(1): (1,pid=2)
+[t=15]
+  > pid=2 prio=1 ('bash') cannot fit, no preemption
+  > idle pid=2 prio=1 ('bash') tf=20 idle=4
+  [t=15] run(4): (1,pid=1) (4,pid=8) (10,pid=0) (5,pid=9)  pend(1): (1,pid=2)
+[t=16]
+  > process pid=9 prio=5 ('cat') finished after t=15
+  > scheduled pid=2 prio=1 ('bash') pending -> running
+  > CPU load: 16 / 20
+  [t=16] run(4): (1,pid=2) (1,pid=1) (10,pid=0) (4,pid=8)  pend(0):
+[t=17]
+  > process pid=1 prio=1 ('bash') finished after t=16
+  > process pid=8 prio=4 ('snake') finished after t=16
+  [t=17] run(2): (1,pid=2) (10,pid=0)  pend(0):
+[t=18]
+  [t=18] run(2): (1,pid=2) (10,pid=0)  pend(0):
+[t=19]
+  > process pid=0 prio=10 ('init') finished after t=18
   [t=19] run(1): (1,pid=2)  pend(0):
+[t=20]
   [t=20] run(1): (1,pid=2)  pend(0):
+[t=21]
+  > process pid=2 prio=1 ('bash') finished after t=20
   [t=21] run(0):  pend(0):
+[t=22]
   [t=22] run(0):  pend(0):
+[t=23]
   [t=23] run(0):  pend(0):
+[t=24]
   [t=24] run(0):  pend(0):
+[t=25]
   [t=25] run(0):  pend(0):
+[t=26]
   [t=26] run(0):  pend(0):
+[t=27]
   [t=27] run(0):  pend(0):
+[t=28]
   [t=28] run(0):  pend(0):
+[t=29]
   [t=29] run(0):  pend(0):
 * Chronogram === 
 	|....|....|....|....|....|...
