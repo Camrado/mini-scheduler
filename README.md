@@ -1,5 +1,5 @@
 
-# DSA2 Project 2526
+# DSA2 Project 2526 -- Mini-Scheduler
 
 ## Report
 
