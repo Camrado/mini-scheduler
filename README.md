@@ -1,6 +1,8 @@
 
 # DSA2 Project 2526 - Mini-Scheduler
 
+**Authors:** [Kamal Yalchin](https://github.com/Camrado) · [Dmitriy Kuramshin](https://github.com/Krmsh1n5)
+
 ## Report
 
 ### Algorithm Description
